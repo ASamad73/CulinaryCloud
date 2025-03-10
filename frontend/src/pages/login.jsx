@@ -6,7 +6,7 @@ import Button from "../components/Button";
 import Logo from "../components/Logo";
 
 
-export default function LoginScreen() {
+export default function LoginScreen({setLogin}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -36,7 +36,7 @@ export default function LoginScreen() {
         <form className="space-y-4" onSubmit={handleLogin}>
           <InputField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <InputField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <Button text="Sign in" loading={loading} />
+          <Button text="Sign in" onClick={()=>setLogin(false)} loading={loading} />
         </form>
 
         <div className="flex justify-between text-sm text-gray-600 mt-4">
