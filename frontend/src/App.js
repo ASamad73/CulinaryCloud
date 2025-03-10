@@ -22,4 +22,26 @@ function App() {
   );
 }
 
+
+
+
+/* used react here */
+
+import React from "react";
+
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import LoginScreen from "./pages/login";
+import SignupScreen from "./pages/signup";
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginScreen />} />
+        <Route path="/signup" element={<SignupScreen />} />
+      </Routes>
+    </Router>
+  );
+}
+
 export default App;
