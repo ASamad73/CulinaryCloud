@@ -1,6 +1,7 @@
 *{
   padding: 0;
   margin: 0;
+  font-family: 'Poppins';
 }
 body{
   display: flex;
@@ -8,6 +9,28 @@ body{
   align-items: center;
   background-color: #FAF3E0;
 }
+.header-right {
+  position: fixed;
+  top: 6%;
+  right: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-right i {
+  font-size: 24px;
+  cursor: pointer;
+  color: #5D4037;
+  transition: transform 0.2s ease-in-out;
+}
+
+.header-right i:hover {
+  transform: scale(1.2);
+  color: #8D6E63;
+}
+
 .page{
   width: 35vw;
   height: 100vh;
@@ -16,6 +39,7 @@ body{
   display: flex;
   align-items: center;
   flex-direction: column;
+  align-items:  center;
 }
 
 .post_container {
@@ -131,4 +155,159 @@ body{
 
 .learn-more:active{
   opacity: 0.8;
+}
+
+/*Creating a recipe post*/
+/* .post-recipe{
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  /* flex-direction: column; */
+
+.recipe-title{
+  height: 9vh;
+  max-height: 100px;
+  width: 27vw;
+  border-radius: 6px;
+  border: 5px solid #ebecec;
+  outline: none;
+  text-align: center;
+  font-size: 25px;
+  color: #2E7D32;
+  font-weight: 700;
+}
+.add-step{
+  display: block;
+  margin-top: 10%;
+}
+
+.step-number{
+  font-style: italic;
+  color: #5D4037;
+  margin-top: 15%;
+  font-weight: bold;
+  font-size: 20px;
+}
+.step-titles{
+  margin-top: 10%;
+  margin-bottom: 5%;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ingredients{
+  display: flex;
+  flex-direction: column; /* Stack input fields vertically */
+  align-items: flex-start; /* Align items to the left */
+  width: 25vw;
+  gap: 2vh; 
+}
+.single-ingredient{
+  display: flex;
+  align-items: center;
+  gap: 5vw;
+  /* margin-bottom: 2vh; */
+}
+.input-fields{
+  height: 7vh;
+  width: 15vw;
+  border-radius: 6px;
+  padding-left: 10px;
+  outline: none;
+  border: none;
+  box-sizing: border-box;
+}
+.ingredient-btns{
+  display: flex;
+  align-items: center;
+  gap: 20%;
+}
+.add-ingredients{
+  border-radius: 4px;
+  height: 5vh;
+  width: 6vw;
+  border: none;
+  outline: none;
+  font-size: small;
+  background-color:#f8ac21;
+  cursor: pointer;
+}
+.remove-ingredients{
+  border-radius: 4px;
+  height: 5vh;
+  width: 6vw;
+  border: none;
+  outline: none;
+  font-size: small;
+  background-color:rgb(245, 70, 70);
+  cursor: pointer;
+}
+.delete-step{
+  margin-top: 8%; 
+  height: 6vh;
+  width: 7vw;
+  color: white;
+  background-color: #E57373;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.add-step{
+  margin-top: 12%;
+  /* height: 6vh; */
+  width: 15vw;
+  display: flex;
+  align-items: center;
+  gap: 7%;
+}
+.step-btn{
+  height: 6vh;
+  width: 3vw;
+  color: white;
+  font-weight: bold;
+  font-size: x-large;
+  background-color: #6CBF84;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.step-txt{
+  font-weight: bold;
+  font-size: large;
+}
+.image{
+  display: flex;
+  align-items: center;
+  gap: 3%;
+  margin-top: 15%;
+}
+.caption-field{
+  margin-top: 5%;
+  width: 25vw;
+  height: 10vh;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  padding-left: 3%;
+}
+
+.next{
+  width: 27vw;
+  display: flex;
+  justify-content: center;
+  margin-top: 15%;
+  margin-bottom: 20%;
+}
+.next-part{
+  height: 7vh;
+  width: 8vw;
+  color: white;
+  font-size: large;
+  font-weight: bold;
+  background-color: #2E7D32;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  outline: none;
 }
