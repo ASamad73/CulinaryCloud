@@ -36,7 +36,9 @@ function Post() {
 
     return (
         <div className="post-recipe">
+            {/* <div className="title-block"> */}
             <input type="text" placeholder="Recipe Title" className="recipe-title"/>
+            {/* </div> */}
             {steps.map((step, stepIndex) => (
                 <div key={step.id}>
                     <h3 className="step-number">Step {stepIndex + 1}</h3>
@@ -46,7 +48,7 @@ function Post() {
                             <div key={ingredientIndex} className="single-ingredient">
                                 <input
                                     type="text"
-                                    placeholder={"Ingredient"}
+                                    placeholder={`Ingredient ${ingredientIndex+1}`}
                                     className="input-fields"
                                     value={ingredient}
                                     onChange={(e) => updateIngredient(stepIndex, ingredientIndex, e.target.value)}
@@ -63,7 +65,10 @@ function Post() {
                     <h5 className="step-titles">Description</h5>
                     <input type="text" placeholder="Explanation of this step" className="input-fields"/>
                     <h5 className="step-titles">Time (if applicable)</h5>
-                    <input type="text" placeholder="Time required" className="input-fields"/>
+                    <div className="time-container">
+                        <input type="number" placeholder="hrs" className="time-field1"/>
+                        <input type="number" placeholder="mins" className="time-field2"/>
+                    </div>
                 </div>
             ))}
             <button className="delete-step" onClick={() => deleteStep(steps.length-1)}>Delete Step</button>
@@ -76,8 +81,8 @@ function Post() {
                 <p className="image-txt">Upload Image</p>
             </div>
             <input type="text" placeholder="Caption (optional)" className="caption-field"></input>
-            <div className="next">
-                <button className="next-part" onClick={()=>setSubmit(true)}>Submit</button>
+            <div className="submit">
+                <button className="submit-part" onClick={()=>setSubmit(true)}>Submit</button>
             </div>
         </div>
     );
