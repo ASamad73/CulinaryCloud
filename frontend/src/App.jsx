@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Recipe from './Recipe.jsx'
 import Search from './Search.jsx'
 import Navbar from './Navbar.jsx'
-import Post from './Post.jsx'
+import Create from './Create.jsx'
 
 function App() {
   const [post, setPost]=useState(false);
@@ -22,7 +22,7 @@ function App() {
               <Recipe />
             </>
           ) : (
-            <Post />
+            <Create />
           )}
         </div>
       </div>
