@@ -29,10 +29,14 @@ app.get('/', (req, res) => res.send('API running'));
 // Route imports
 const authRoutes = require('./routes/auth');
 const recipeRoutes = require('./routes/recipe'); // ✅ Add this line here
+const commentRoutes = require('./routes/comment');
+const userRoutes = require('./routes/user');
 
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes); // This now works ✅
+app.use('/api/comments', commentRoutes);
+app.use('/api/user', userRoutes); // <-- Mount it at /api/user
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
