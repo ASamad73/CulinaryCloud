@@ -1,13 +1,39 @@
-*{
+/* Tailwind directives - make sure you have tailwindcss installed and configured */
+/* These will be processed by the Tailwind CSS processor */
+
+/* stylelint-disable */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* stylelint-enable */
+
+* {
   padding: 0;
   margin: 0;
   font-family: 'Poppins';
 }
-body{
-  display: flex;
-  align-items: center;
-  background-color: #FAF3E0;
+
+/* Remove global body styles that interfere with login/signup */
+body {
+  background-color: transparent; /* Let child components control background */
+  display: block; /* Reset to default to avoid flex affecting login/signup */
 }
+
+/* Style for login/signup container */
+.body-lo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #e5e7eb; /* Matches Tailwind's bg-gray-100 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* All landing page styles remain unchanged below this point */
 
 /* .screen {
   height: 100vh;
@@ -16,8 +42,7 @@ body{
   align-items: center;
 } */
 
-
-.page{
+.page {
   width: 100%;
   padding: 20px;
   margin-top: 10px;
@@ -27,12 +52,11 @@ body{
   gap: 7%;
 }
 
-.left-part{
+.left-part {
   /* flex: 0 0 20vw; */
   width: 20vw;
   /* min-width: 5vw; */
   height: 100vh;
-
 }
 
 .middle-part {
@@ -51,25 +75,25 @@ body{
   /* overflow: hidden; */
 }
 
-.user_profile{
+.user_profile {
   display: flex;
   align-items: center;
   font-family: 'Poppins';
 }
 
-.user_info{
-  font-size:small;
+.user_info {
+  font-size: small;
   margin-left: 1vw;
   color: #333333;
   margin-bottom: 1vh;
 }
 
-#user_badge{
+#user_badge {
   color: #2E7D32;
   font-weight: 700;
-} 
+}
 
-.recipe-image{
+.recipe-image {
   width: 50vw;
   height: 90vh;
   object-fit: cover;
@@ -86,29 +110,33 @@ body{
 }
 
 .like_comment i:first-child {
-  margin-right: 20%;  
+  margin-right: 20%;
 }
 
-.user_profile i, .like_comment i, .ratings i{
-  font-size:x-large;
+.user_profile i,
+.like_comment i,
+.ratings i {
+  font-size: x-large;
   cursor: pointer;
 }
 
-.fa-star:hover, .fa-heart:hover, .fa-comment:hover{
+.fa-star:hover,
+.fa-heart:hover,
+.fa-comment:hover {
   color: #8D6E63;
   transform: scale(1.1);
   transition: transform 0.1s ease-out;
 }
 
-.fa-solid.fa-heart{
-  color:#FF3B30;
+.fa-solid.fa-heart {
+  color: #FF3B30;
 }
 
-.fa-solid.fa-star{
+.fa-solid.fa-star {
   color: #FFA500;
 }
 
-.search-field{
+.search-field {
   height: 3%;
   width: 98%;
   border-radius: 14px;
@@ -121,11 +149,11 @@ body{
   outline: none;
 }
 
-.search-field::placeholder{
+.search-field::placeholder {
   color: #8D6E63;
 }
 
-.post-number{
+.post-number {
   display: flex;
   justify-content: space-between;
   font-family: 'Poppins';
@@ -134,13 +162,13 @@ body{
   color: #333333;
 }
 
-.post-description{
+.post-description {
   font-size: 14px;
   font-family: 'Inter';
   color: #333333;
 }
 
-.learn-more{
+.learn-more {
   border: none;
   background-color: #FAF3E0;
   font-weight: 700;
@@ -151,24 +179,24 @@ body{
   transition: color 0.2s ease-in-out;
 }
 
-.learn-more:hover{
+.learn-more:hover {
   color: #2E7D32;
   text-decoration: underline;
 }
 
-.learn-more:active{
+.learn-more:active {
   opacity: 0.8;
 }
 
 /*Creating a recipe post*/
 
-.post-recipe{
+.post-recipe {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.recipe-title{
+.recipe-title {
   height: 10vh;
   max-height: 100px;
   width: 28vw;
@@ -182,38 +210,42 @@ body{
   margin-left: 17%;
 }
 
-.add-step{
+.add-step {
   display: block;
   margin-top: 10%;
 }
 
-.step-number{
+.step-number {
   font-style: italic;
   color: #5D4037;
   margin-top: 15%;
   font-weight: bold;
   font-size: 20px;
 }
-.step-titles{
+
+.step-titles {
   margin-top: 10%;
   margin-bottom: 5%;
   font-size: 16px;
   font-weight: 600;
 }
-.ingredients{
+
+.ingredients {
   display: flex;
   flex-direction: column; /* Stack input fields vertically */
   align-items: flex-start; /* Align items to the left */
   width: 28vw;
-  gap: 2vh; 
+  gap: 2vh;
 }
-.single-ingredient{
+
+.single-ingredient {
   display: flex;
   align-items: center;
   gap: 7vw;
   /* margin-bottom: 2vh; */
 }
-.input-fields{
+
+.input-fields {
   height: 8vh;
   width: 17vw;
   border-radius: 6px;
@@ -222,37 +254,43 @@ body{
   border: none;
   box-sizing: border-box;
 }
-.ingredient-btns{
+
+.ingredient-btns {
   display: flex;
   align-items: center;
   gap: 20%;
 }
-.add-ingredients{
+
+.add-ingredients {
   border-radius: 4px;
   height: 6vh;
   width: 7vw;
   border: none;
   outline: none;
   font-size: small;
-  background-color:#f8ac21;
+  background-color: #f8ac21;
   cursor: pointer;
 }
-.remove-ingredients{
+
+.remove-ingredients {
   border-radius: 4px;
   height: 6vh;
   width: 7vw;
   border: none;
   outline: none;
   font-size: small;
-  background-color:rgb(245, 70, 70);
+  background-color: rgb(245, 70, 70);
   cursor: pointer;
 }
-.time-container{
+
+.time-container {
   display: flex;
   align-items: center;
   gap: 10%;
 }
-.time-field1, .time-field2{
+
+.time-field1,
+.time-field2 {
   height: 7vh;
   width: 6vw;
   border-radius: 6px;
@@ -262,8 +300,8 @@ body{
   box-sizing: border-box;
 }
 
-.delete-step{
-  margin-top: 8%; 
+.delete-step {
+  margin-top: 8%;
   height: 6vh;
   width: 7vw;
   color: white;
@@ -273,7 +311,8 @@ body{
   border-radius: 6px;
   cursor: pointer;
 }
-.add-step{
+
+.add-step {
   margin-top: 12%;
   /* height: 6vh; */
   width: 15vw;
@@ -281,7 +320,8 @@ body{
   align-items: center;
   gap: 7%;
 }
-.step-btn{
+
+.step-btn {
   height: 6vh;
   width: 3vw;
   color: white;
@@ -293,17 +333,20 @@ body{
   outline: none;
   cursor: pointer;
 }
-.step-txt{
+
+.step-txt {
   font-weight: bold;
   font-size: large;
 }
-.image{
+
+.image {
   display: flex;
   align-items: center;
   gap: 3%;
   margin-top: 15%;
 }
-.caption-field{
+
+.caption-field {
   margin-top: 5%;
   width: 25vw;
   height: 10vh;
@@ -312,7 +355,8 @@ body{
   outline: none;
   padding-left: 3%;
 }
-.submit{
+
+.submit {
   width: 27vw;
   display: flex;
   justify-content: center;
@@ -320,7 +364,8 @@ body{
   margin-top: 15%;
   margin-bottom: 20%;
 }
-.submit-part{
+
+.submit-part {
   height: 7vh;
   width: 8vw;
   color: white;
@@ -334,17 +379,20 @@ body{
 }
 
 /* navbar */
-.navbar{
+.navbar {
   padding-left: 1rem;
 }
-.navbar-name{
+
+.navbar-name {
   color: #2E7D32;
   font-weight: bold;
 }
-.sites-container{
+
+.sites-container {
   margin-top: 1rem;
 }
-.sites{
+
+.sites {
   display: flex;
   align-items: center;
   gap: 10%;
@@ -353,6 +401,7 @@ body{
   position: relative;
   padding-left: 5%;
 }
+
 .sites::before {
   content: "";
   position: absolute;
@@ -399,7 +448,7 @@ body{
   text-align: left;
 }
 
-.post-cooking-heading{
+.post-cooking-heading {
   margin-top: 3vw;
 }
 
@@ -438,4 +487,9 @@ body{
 
 .start-cooking:hover {
   background-color: #1f5135;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
