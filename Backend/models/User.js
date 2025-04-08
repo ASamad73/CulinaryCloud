@@ -1,23 +1,28 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const UserSchema = new mongoose.Schema({
-  username: {
+  email: {
     type: String,
-    required: true,
+    required: [true, "Email is required"],
     unique: true,
+    validate: {
+      validator: function(v) {
+        return validator.isEmail(v);
+      },
+      message: props => `${props.value} is not a valid email address!`
+    }
   },
   password: {
     type: String,
     required: true,
   },
-
-  // ✅ New field: Profile picture URL (string for now)
+  // New field: Profile picture stored as a buffer (binary data)
   profilePicture: {
-    type: String,
-    default: '' // or you can set a default avatar image URL
+    data: Buffer,
+    contentType: String  // No image by default
   },
-
-  // ✅ New field: Dietary preferences (array of strings)
+  // New field: Dietary preferences (array of strings)
   dietaryPreferences: {
     type: [String],
     default: [],
@@ -25,7 +30,7 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// Custom validator for the preferences limit
+// Custom validator for the dietary preferences limit
 function arrayLimit(val) {
   return val.length <= 10;
 }

@@ -1,5 +1,38 @@
 const mongoose = require('mongoose');
 
+const ALLOWED_CATEGORIES = [
+  "Biryani Varieties",
+  "Nihari Delicacies",
+  "Karahi Creations",
+  "Korma Specialties",
+  "Haleem Masterpieces",
+  "Kebab Assortments",
+  "Tandoori Treats",
+  "Curry Classics",
+  "Pulao Dishes",
+  "Daal Delights",
+  "Chaat Sensations",
+  "Paratha Varieties",
+  "Naan & Flatbreads",
+  "Samosa Selections",
+  "Pakora & Bhaji",
+  "Pickles & Chutneys",
+  "Raita & Yogurt Dishes",
+  "Saag & Green Vegetable Curries",
+  "Vegetable Curries",
+  "Mughlai Influences",
+  "Street Food Specialties",
+  "Seafood Selections",
+  "Traditional Desserts",
+  "Rice Puddings & Kheer",
+  "Sheer Khurma",
+  "Lassi & Yogurt Drinks",
+  "Chai Varieties",
+  "Halwa Creations",
+  "Salad & Raita Innovations",
+  "Fusion Desi Snacks"
+];
+
 const StepSchema = new mongoose.Schema({
   ingredients: [String],
   description: String,
@@ -17,10 +50,22 @@ const RecipeSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: { type: Date, default: Date.now },
 
-    //Precomputed fields for the lieks and comments onn a post
+  // Precomputed fields for likes and comments
   likeCount: { type: Number, default: 0 },
-  commentCount: { type: Number, default: 0 }
-});
+  commentCount: { type: Number, default: 0 },
 
+  // New field for categories (array of strings) with a maximum of 3 selections
+  categories: {
+    type: [String],
+    default: [],
+    enum: ALLOWED_CATEGORIES,
+    validate: {
+      validator: function(val) {
+        return val.length <= 3;
+      },
+      message: '{PATH} exceeds the limit of 3'
+    }
+  }
+});
 
 module.exports = mongoose.model('Recipe', RecipeSchema);

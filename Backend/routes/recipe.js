@@ -9,7 +9,53 @@ const router = express.Router();
 
 // CREATE recipe (protected)
 router.post('/', authMiddleware, async (req, res) => {
-  const { title, steps, image, caption } = req.body;
+  const { title, steps, image, caption, categories } = req.body;
+
+  // Predefined list of allowed categories (should match the schema)
+  const ALLOWED_CATEGORIES = [
+    "Biryani Varieties",
+    "Nihari Delicacies",
+    "Karahi Creations",
+    "Korma Specialties",
+    "Haleem Masterpieces",
+    "Kebab Assortments",
+    "Tandoori Treats",
+    "Curry Classics",
+    "Pulao Dishes",
+    "Daal Delights",
+    "Chaat Sensations",
+    "Paratha Varieties",
+    "Naan & Flatbreads",
+    "Samosa Selections",
+    "Pakora & Bhaji",
+    "Pickles & Chutneys",
+    "Raita & Yogurt Dishes",
+    "Saag & Green Vegetable Curries",
+    "Vegetable Curries",
+    "Mughlai Influences",
+    "Street Food Specialties",
+    "Seafood Selections",
+    "Traditional Desserts",
+    "Rice Puddings & Kheer",
+    "Sheer Khurma",
+    "Lassi & Yogurt Drinks",
+    "Chai Varieties",
+    "Halwa Creations",
+    "Salad & Raita Innovations",
+    "Fusion Desi Snacks"
+  ];
+
+  // Validate that categories is an array and has at most 3 items
+  if (!Array.isArray(categories) || categories.length > 3) {
+    return res.status(400).json({ msg: 'Please select up to 3 categories.' });
+  }
+
+  // Validate each selected category is allowed
+  for (let cat of categories) {
+    if (!ALLOWED_CATEGORIES.includes(cat)) {
+      return res.status(400).json({ msg: `Invalid category selected: ${cat}` });
+    }
+  }
 
   try {
     const newRecipe = new Recipe({
@@ -17,16 +63,18 @@ router.post('/', authMiddleware, async (req, res) => {
       steps,
       image,
       caption,
+      categories,          // Saving the selected category strings
       user: req.user.id
     });
 
     await newRecipe.save();
-    res.status(201).json(newRecipe);   //A successful creation returns status 201 with the new recipe data.
+    res.status(201).json(newRecipe);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
   }
 });
+
 
 // GET all recipes (public)
 // router.get('/', async (req, res) => {

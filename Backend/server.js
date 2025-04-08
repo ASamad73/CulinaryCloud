@@ -1,11 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-
+const cors = require('cors'); // <-- Add this line
 // Load environment variables from .env file
 dotenv.config();
 
 const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:5173' // or simply app.use(cors()) to allow all origins
+}));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
