@@ -1,72 +1,104 @@
-import { useState } from 'react';
-import foodImage from './assets/food1.jpg';
-import Post from './Post';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Post from './Post'; // for the expanded view
 
 function Recipe() {
-    const [heart, setHeart] = useState(false);
-    const [stars, setStars] = useState(0); 
-    const [likes, setLikes] = useState(0);
-    const [post, setPost] = useState(false)
+  const [recipes, setRecipes] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [likes, setLikes] = useState({}); // to track like toggles
+  const [stars, setStars] = useState({}); // to track individual ratings
 
-    const regular = "fa-regular fa-star";
-    const solid = "fa-solid fa-star";
+  const regular = "fa-regular fa-star";
+  const solid = "fa-solid fa-star";
 
-    function handleInteractions(type, index = null) {
-        if (type === "heart") {
-            setHeart(prevHeart => !prevHeart);
-            setLikes(prevLikes=> prevLikes==1 ? 0 : 1)
-        } else if (type === "stars") {
-            setStars(prevStars => (index + 1 === prevStars ? index : index + 1));
-        }
-    }
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/recipes`, {
+          headers: {
+            'x-auth-token': token || '',
+          },
+        });
+        setRecipes(res.data);
+      } catch (err) {
+        console.error("Error fetching recipes:", err);
+      }
+    };
 
-    return (
-        <>
-            <div className="post_container">
-                <div className="user_profile">     
-                    <i className="fa-solid fa-user"/>
-                    <div className="user_info">
-                        <h4 id="user_name">Abdul Samad</h4>
-                        <h4 id="user_badge">Culinary Champion</h4>
-                    </div>
-                </div>
+    fetchRecipes();
+  }, []);
 
-                <img src={foodImage} alt="Food" className='recipe-image'/>
+  const handleLikeToggle = (id) => {
+    setLikes(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
 
-                <div className="post_interations">
-                    <div className="like_comment">
-                        <i 
-                            className={heart ? "fa-solid fa-heart" : "fa-regular fa-heart"} 
-                            onClick={() => handleInteractions("heart")} 
-                        />
-                        <i className="fa-regular fa-comment" />
-                    </div>
-                    <div className="ratings">
-                        {[...Array(5)].map((_, index) => (
-                            <i 
-                                key={index} 
-                                className={index < stars ? solid : regular} 
-                                onClick={() => handleInteractions("stars", index)} 
-                            />
-                        ))}
-                    </div>
-                </div>
+  const handleStarClick = (id, index) => {
+    setStars(prev => ({
+      ...prev,
+      [id]: (index + 1 === prev[id] ? index : index + 1)
+    }));
+  };
 
-                <div className="post-number">
-                    <p><b>{likes} {likes==1 ? "like" : "likes"}</b></p>
-                    <p><b>{stars}.0 rated</b></p>
-                </div>
-
-                <p className='post-description'>
-                    <b>Chicken Curry with Rice</b> Lorem ipsum dolor sit amet consectetur adipisicing elit...
-                    {!post && ( <>
-                        <button className='learn-more' onClick={()=>setPost(true)}>Learn More</button>
-                    </>)}
-                </p>
+  return (
+    <>
+      {recipes.map((recipe) => (
+        <div className="post_container" key={recipe._id}>
+          <div className="user_profile">     
+            <i className="fa-solid fa-user" />
+            <div className="user_info">
+              <h4 id="user_name">{recipe.user?.username || "Unknown"}</h4>
+              <h4 id="user_badge">Culinary Creator</h4>
             </div>
-            {post && <Post/>}
-        </>
-    );
+          </div>
+
+          <img 
+            src={recipe.image || '/default.jpg'} 
+            alt="Food" 
+            className="recipe-image" 
+          />
+
+          <div className="post_interations">
+            <div className="like_comment">
+              <i 
+                className={likes[recipe._id] ? "fa-solid fa-heart" : "fa-regular fa-heart"} 
+                onClick={() => handleLikeToggle(recipe._id)} 
+              />
+              <i className="fa-regular fa-comment" />
+            </div>
+            <div className="ratings">
+              {[...Array(5)].map((_, index) => (
+                <i 
+                  key={index} 
+                  className={index < (stars[recipe._id] || 0) ? solid : regular} 
+                  onClick={() => handleStarClick(recipe._id, index)} 
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="post-number">
+            <p><b>{likes[recipe._id] ? recipe.likeCount + 1 : recipe.likeCount} {recipe.likeCount === 1 ? "like" : "likes"}</b></p>
+            <p><b>{(stars[recipe._id] || 0)}.0 rated</b></p>
+          </div>
+
+          <p className="post-description">
+            <b>{recipe.title}</b> {recipe.caption?.slice(0, 100)}...
+            {!selectedPost || selectedPost._id !== recipe._id ? (
+              <button className="learn-more" onClick={() => setSelectedPost(recipe)}>
+                Learn More
+              </button>
+            ) : null}
+          </p>
+        </div>
+      ))}
+
+      {selectedPost && <Post recipe={selectedPost} />}
+    </>
+  );
 }
 
 export default Recipe;

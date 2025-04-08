@@ -1,31 +1,31 @@
-import { useState, useEffect } from 'react';
-import Recipe from './Recipe.jsx';
-import Search from './Search.jsx';
-import Navbar from './Navbar.jsx';
-import Create from './Create.jsx';
-import LoginScreen from './pages/login.jsx';
-import SignupScreen from './pages/signup.jsx';
+import { useState } from "react";
+import { Routes, Route, useNavigate, Link } from "react-router-dom";
+
+import LoginScreen from "./pages/login.jsx";
+import SignupScreen from "./pages/signup.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Profile from "./Profile.jsx";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
-  const [post, setPost] = useState(false);
-
-  useEffect(() => {
-    // Remove this line for production
-    localStorage.removeItem('isAuthenticated'); // Reset on every load during dev
-    const loggedIn = localStorage.getItem('isAuthenticated') === 'true';
-    setIsAuthenticated(loggedIn);
-  }, []);
+  const navigate = useNavigate();
 
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
-    localStorage.setItem('isAuthenticated', 'true');
+    setIsGuest(false);
+    localStorage.setItem("isAuthenticated", "true");
+    localStorage.removeItem("isGuest");
+    navigate("/dashboard");
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('isAuthenticated');
+  const handleGuestLogin = () => {
+    setIsAuthenticated(true);
+    setIsGuest(true);
+    localStorage.setItem("isAuthenticated", "true");
+    localStorage.setItem("isGuest", "true");
+    navigate("/dashboard");
   };
 
   const toggleAuthScreen = () => {
@@ -34,33 +34,37 @@ function App() {
 
   return (
     <div className="main-container">
-      {!isAuthenticated ? (
-        <div className="body-lo">
-          {showSignup ? (
-            <SignupScreen onAuthSuccess={handleAuthSuccess} toggleScreen={toggleAuthScreen} />
-          ) : (
-            <LoginScreen onAuthSuccess={handleAuthSuccess} toggleScreen={toggleAuthScreen} />
-          )}
-        </div>
-      ) : (
-        <div className="screen">
-          <div className="page">
-            <div className="left-part">
-              <Navbar setPost={setPost} onLogout={handleLogout} />
-            </div>
-            <div className="middle-part">
-              {!post ? (
-                <>
-                  <Search />
-                  <Recipe />
-                </>
+      {/* Navigation bar for easy route access */}
+      <nav>
+        <Link to="/">Home</Link> |{" "}
+        <Link to="/dashboard">Dashboard</Link> |{" "}
+        <Link to="/profile">Profile</Link>
+      </nav>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div className="body-lo">
+              {showSignup ? (
+                <SignupScreen
+                  onAuthSuccess={handleAuthSuccess}
+                  toggleScreen={toggleAuthScreen}
+                />
               ) : (
-                <Create />
+                <LoginScreen
+                  onAuthSuccess={handleAuthSuccess}
+                  toggleScreen={toggleAuthScreen}
+                  onGuestLogin={handleGuestLogin}
+                />
               )}
             </div>
-          </div>
-        </div>
-      )}
+          }
+        />
+        {/* Route for dashboard */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        {/* New route for the profile page */}
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
     </div>
   );
 }
