@@ -105,7 +105,74 @@ router.get('/', guestMiddleware, async (req, res) => {
   }
 });
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// added by Azaan ----------------------------------------------------------------------
+
+// Step-by-Step Cooking Mode
+router.get('/:id/step-by-step', async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+
+    if (!recipe) {
+      return res.status(404).json({ msg: 'Recipe not found' });
+    }
+
+    // Extract the step-by-step data
+    const stepByStep = {
+      title: recipe.title,
+      steps: recipe.steps.map((step, index) => ({
+        stepNumber: index + 1,
+        description: step.description,
+        ingredients: step.ingredients,
+        timer: step.time ? {
+          hours: step.time.hours || 0,
+          minutes: step.time.minutes || 0
+        } : null
+      }))
+    };
+
+    res.json(stepByStep);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// added by Azaan ----------------------------------------------------------------------
+
+// New Search & Filtering Endpoint
+// Place this above the GET single recipe route (router.get('/:id', ...))
+router.get('/search', guestMiddleware, async (req, res) => {
+  try {
+    const { ingredient, cuisine, page = 1, limit = 10 } = req.query;
+    const queryObject = {};
+
+    // If an ingredient is provided, search in both steps.ingredients and title using $or
+    if (ingredient) {
+      queryObject.$or = [
+        { "steps.ingredients": { $regex: ingredient, $options: "i" } },
+        { "title": { $regex: ingredient, $options: "i" } }
+      ];
+    }
+
+    // If a cuisine is provided, filter by categories
+    if (cuisine) {
+      queryObject["categories"] = { $regex: cuisine, $options: "i" };
+    }
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const recipes = await Recipe.find(queryObject)
+      .populate('user', 'username')
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.json(recipes);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 
 // GET single recipe by ID (public)
 router.get('/:id', async (req, res) => {
@@ -118,8 +185,6 @@ router.get('/:id', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
-
 
 // UPDATE a recipe (only by owner)
 router.put('/:id', authMiddleware, async (req, res) => {
@@ -205,8 +270,6 @@ router.post('/:id/like', authMiddleware, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
-
 
 
 module.exports = router;
