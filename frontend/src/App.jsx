@@ -5,6 +5,8 @@ import LoginScreen from "./pages/login.jsx";
 import SignupScreen from "./pages/signup.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Profile from "./Profile.jsx";
+import Search from "./Search.jsx";
+import SearchResults from "./SearchResults.jsx";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,6 +41,7 @@ function App() {
         <Link to="/">Home</Link> |{" "}
         <Link to="/dashboard">Dashboard</Link> |{" "}
         <Link to="/profile">Profile</Link>
+        <Link to="/search">Search</Link>
       </nav>
       <Routes>
         <Route
@@ -64,6 +67,11 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         {/* New route for the profile page */}
         <Route path="/profile" element={<Profile />} />
+        {/* Search route: displays the search input and suggestions */}
+        <Route path="/search" element={<Search />} />
+        {/* Search results route: displays detailed recipes based on search selections */}
+        <Route path="/search-results" element={<SearchResults />} />
+
       </Routes>
     </div>
   );

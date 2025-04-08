@@ -15,7 +15,7 @@ function Navbar(props){
                     <i className="fa-solid fa-square-plus"></i>
                     <h3>Create</h3>
                 </div>
-                <div className="sites">
+                <div className="sites" onClick={()=>props.setProfile(true)}>
                     <i className="fa-solid fa-user"></i>
                     <h3>Profile</h3>
                 </div>

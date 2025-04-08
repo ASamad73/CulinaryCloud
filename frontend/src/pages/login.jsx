@@ -83,9 +83,13 @@ export default function LoginScreen({ onAuthSuccess, toggleScreen, onGuestLogin 
           onChange={(e) => setPassword(e.target.value)} 
         />
         {/* <button onClick={()=>}>SignIn with Google</button> */}
-        <a href="http://localhost:5001/auth/google/callback">
-          <button type="button">SignIn with Google</button>
-        </a>
+        <button 
+        type="button"
+        onClick={() => window.location.href = "http://localhost:5001/api/auth/google"}
+        className="text-green-700 font-semibold hover:underline"
+        >
+          Sign in with Google
+        </button>
         <Button text="Sign in" loading={loading} onClick={handleLogin} />
       </form>
 
