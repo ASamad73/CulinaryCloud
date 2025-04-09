@@ -2,31 +2,78 @@ const express = require('express');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
+const cloudinary = require('../utils/cloudinary');
 const router = express.Router();
 
-// Configure multer to store file in memory (buffer)
+// Configure multer for memory storage
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
+// GET profile picture URL
+router.get('/profile-picture/:userId', authMiddleware, async (req, res) => {
+  try {
+    // Verify the requested userId matches the logged-in user's ID
+    if (req.params.userId !== req.user.id) {
+      return res.status(403).send('Unauthorized access');
+    }
+
+    const user = await User.findById(req.user.id).select('profilePicture');
+    
+    if (!user?.profilePicture) {
+      return res.status(404).send('Profile picture not found');
+    }
+
+    res.json({ url: user.profilePicture });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// GET current user info
+router.get('/me', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('_id profilePicture bio email');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.json({ id: user._id, profilePicture: user.profilePicture , bio:user.bio, email:user.email});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+// UPDATE profile with image upload
 router.put('/profile', authMiddleware, upload.single('profilePicture'), async (req, res) => {
   try {
-    // If a file was uploaded, use its buffer and mimetype; otherwise use the provided field (if applicable)
-    let profilePictureData;
-    if (req.file) {
-      profilePictureData = {
-        data: req.file.buffer,
-        contentType: req.file.mimetype
-      };
-    } else {
-      // Optionally handle if no file is provided
-      profilePictureData = req.body.profilePicture || undefined;
-    }
+    let profilePictureUrl = req.body.existingImage; // For when not changing image
     
+    // If new file uploaded
+    if (req.file) {
+      // Convert buffer to base64
+      const b64 = Buffer.from(req.file.buffer).toString('base64');
+      const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+      
+      // Upload to Cloudinary
+      const result = await cloudinary.uploader.upload(dataURI, {
+        folder: 'user-profiles',
+        width: 500,
+        height: 500,
+        crop: 'fill'
+      });
+      
+      profilePictureUrl = result.secure_url;
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
       {
-        profilePicture: profilePictureData,
-        dietaryPreferences: req.body.dietaryPreferences // make sure this is an array
+        profilePicture: profilePictureUrl,
+        dietaryPreferences: req.body.dietaryPreferences
       },
       { new: true }
     );
@@ -34,6 +81,44 @@ router.put('/profile', authMiddleware, upload.single('profilePicture'), async (r
     res.json(updatedUser);
   } catch (err) {
     console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+
+// GET bio of current user
+router.get('/bio', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('bio');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.json({ bio: user.bio || "" });
+  } catch (err) {
+    console.error('[GET Bio Error]', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// PUT bio for current user
+router.put('/bio', authMiddleware, async (req, res) => {
+  try {
+    const { bio } = req.body;
+
+    // Optional: limit bio length
+    if (bio && bio.length > 300) {
+      return res.status(400).json({ msg: 'Bio is too long (max 300 characters)' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { bio },
+      { new: true }
+    ).select('bio');
+
+    res.json({ bio: user.bio });
+  } catch (err) {
+    console.error('[PUT Bio Error]', err.message);
     res.status(500).send('Server error');
   }
 });

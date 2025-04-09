@@ -50,14 +50,17 @@ const UserSchema = new mongoose.Schema({
     type: AuthSchema,
     default: {}
   },
-  profilePicture: {
-    data: Buffer,
-    contentType: String  // No image by default
+  profilePicture:{
+    type: String, // Now stores Cloudinary URL
+    default: ""
   },
   dietaryPreferences: {
     type: [String],
     default: [],
     validate: [val => val.length <= 10, '{PATH} exceeds the limit of 10']
+  },
+  bio: {
+    type:String
   }
 }, { timestamps: true });
 

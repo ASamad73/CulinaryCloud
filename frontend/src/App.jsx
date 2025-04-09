@@ -1,18 +1,43 @@
-import { useState } from "react";
-import { Routes, Route, useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Routes, Route, useNavigate, Link, useLocation } from "react-router-dom";
 
+// Pages
 import LoginScreen from "./pages/login.jsx";
 import SignupScreen from "./pages/signup.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Profile from "./Profile.jsx";
 import Search from "./Search.jsx";
 import SearchResults from "./SearchResults.jsx";
+import ProtectedRoute from "./components/ProtectedRoute";
+import QuickRecipes from "./pages/QuickRecipes.jsx";  
+
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isGuest, setIsGuest] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuthenticated") === "true"
+  );  
+  const [isGuest, setIsGuest] = useState(localStorage.getItem("isGuest") === "true");
   const [showSignup, setShowSignup] = useState(false);
+
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get("token");
+
+    if (token) {
+      // Store token and update auth state
+      localStorage.setItem("token", token);
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.removeItem("isGuest");
+      setIsAuthenticated(true);
+      setIsGuest(false);
+
+      // Clean up the URL
+      navigate("/dashboard", { replace: true });
+    }
+  }, [location, navigate]);
 
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
@@ -23,11 +48,18 @@ function App() {
   };
 
   const handleGuestLogin = () => {
-    setIsAuthenticated(true);
+    setIsAuthenticated(false);
     setIsGuest(true);
-    localStorage.setItem("isAuthenticated", "true");
+    localStorage.setItem("isAuthenticated", "false");
     localStorage.setItem("isGuest", "true");
     navigate("/dashboard");
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setIsGuest(false);
+    localStorage.clear();
+    navigate("/");
   };
 
   const toggleAuthScreen = () => {
@@ -36,13 +68,6 @@ function App() {
 
   return (
     <div className="main-container">
-      {/* Navigation bar for easy route access */}
-      <nav>
-        <Link to="/">Home</Link> |{" "}
-        <Link to="/dashboard">Dashboard</Link> |{" "}
-        <Link to="/profile">Profile</Link>
-        <Link to="/search">Search</Link>
-      </nav>
       <Routes>
         <Route
           path="/"
@@ -63,16 +88,54 @@ function App() {
             </div>
           }
         />
-        {/* Route for dashboard */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        {/* New route for the profile page */}
-        <Route path="/profile" element={<Profile />} />
-        {/* Search route: displays the search input and suggestions */}
-        <Route path="/search" element={<Search />} />
-        {/* Search results route: displays detailed recipes based on search selections */}
-        <Route path="/search-results" element={<SearchResults />} />
+        <Route
+          path="/dashboard"
+          element={
+            <Dashboard
+              isGuest={isGuest}
+              onLogout={handleLogout}
+            />
+          }
+        />
 
+        {/* ✅ These are now protected */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/search"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <Search />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/search-results"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <SearchResults />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/quick-recipes"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <QuickRecipes />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
+
     </div>
   );
 }

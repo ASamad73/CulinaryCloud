@@ -34,7 +34,12 @@ const ALLOWED_CATEGORIES = [
 ];
 
 const StepSchema = new mongoose.Schema({
-  ingredients: [String],
+  ingredients: [
+    {
+      name: String, 
+      quantity: String, // or Number, depending on your use case
+    }
+  ],
   description: String,
   time: {
     hours: Number,

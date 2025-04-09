@@ -5,70 +5,167 @@ const Comment = require('../models/Comment');  // Import the Like model
 
 const authMiddleware = require('../middleware/auth'); // JWT check
 const guestMiddleware = require('../middleware/guest');
+
+
+const multer = require('multer');
+const cloudinary = require('../utils/cloudinary');
+
 const router = express.Router();
 
-// CREATE recipe (protected)
-router.post('/', authMiddleware, async (req, res) => {
-  const { title, steps, image, caption, categories } = req.body;
+// Configure multer to store files in memory
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
-  // Predefined list of allowed categories (should match the schema)
-  const ALLOWED_CATEGORIES = [
-    "Biryani Varieties",
-    "Nihari Delicacies",
-    "Karahi Creations",
-    "Korma Specialties",
-    "Haleem Masterpieces",
-    "Kebab Assortments",
-    "Tandoori Treats",
-    "Curry Classics",
-    "Pulao Dishes",
-    "Daal Delights",
-    "Chaat Sensations",
-    "Paratha Varieties",
-    "Naan & Flatbreads",
-    "Samosa Selections",
-    "Pakora & Bhaji",
-    "Pickles & Chutneys",
-    "Raita & Yogurt Dishes",
-    "Saag & Green Vegetable Curries",
-    "Vegetable Curries",
-    "Mughlai Influences",
-    "Street Food Specialties",
-    "Seafood Selections",
-    "Traditional Desserts",
-    "Rice Puddings & Kheer",
-    "Sheer Khurma",
-    "Lassi & Yogurt Drinks",
-    "Chai Varieties",
-    "Halwa Creations",
-    "Salad & Raita Innovations",
-    "Fusion Desi Snacks"
-  ];
 
-  // Validate that categories is an array and has at most 3 items
-  if (!Array.isArray(categories) || categories.length > 3) {
-    return res.status(400).json({ msg: 'Please select up to 3 categories.' });
-  }
-
-  // Validate each selected category is allowed
-  for (let cat of categories) {
-    if (!ALLOWED_CATEGORIES.includes(cat)) {
-      return res.status(400).json({ msg: `Invalid category selected: ${cat}` });
-    }
-  }
-
+// POST /recipes - Create a new recipe
+router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   try {
+    let imageUrl = req.body.existingImage || ''; // In case there’s a default or existing image
+
+    // Check if an image file is provided
+    if (req.file) {
+      // Convert the file buffer to a Base64 string and create a data URI
+      const b64 = req.file.buffer.toString('base64');
+      const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+
+      // Upload to Cloudinary (use a folder like 'recipes' to keep things organized)
+      const result = await cloudinary.uploader.upload(dataURI, {
+        folder: 'recipes',
+        // Optionally, add transformations like resizing:
+        width: 800,
+        height: 600,
+        crop: 'limit'
+      });
+      imageUrl = result.secure_url;
+    }
+
+    // Create a new Recipe document
     const newRecipe = new Recipe({
-      title,
-      steps,
-      image,
-      caption,
-      categories,          // Saving the selected category strings
-      user: req.user.id
+      title: req.body.title,
+      steps: JSON.parse(req.body.steps || '[]'), // If you're sending steps as JSON string
+      image: imageUrl,
+      caption: req.body.caption,
+      user: req.user.id,
+      // Make sure categories adhere to the limit set in your schema
+      categories: req.body.categories ? JSON.parse(req.body.categories) : []
     });
 
-    await newRecipe.save();
-    res.status(201).json(newRecipe);
+    const savedRecipe = await newRecipe.save();
+    res.json(savedRecipe);
+  } catch (err) {
+    console.error('Error creating recipe:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+
+// // CREATE recipe (protected)
+// router.post('/', authMiddleware, async (req, res) => {
+//   const { title, steps, image, caption, categories } = req.body;
+
+//   // Predefined list of allowed categories (should match the schema)
+//   const ALLOWED_CATEGORIES = [
+//     "Biryani Varieties",
+//     "Nihari Delicacies",
+//     "Karahi Creations",
+//     "Korma Specialties",
+//     "Haleem Masterpieces",
+//     "Kebab Assortments",
+//     "Tandoori Treats",
+//     "Curry Classics",
+//     "Pulao Dishes",
+//     "Daal Delights",
+//     "Chaat Sensations",
+//     "Paratha Varieties",
+//     "Naan & Flatbreads",
+//     "Samosa Selections",
+//     "Pakora & Bhaji",
+//     "Pickles & Chutneys",
+//     "Raita & Yogurt Dishes",
+//     "Saag & Green Vegetable Curries",
+//     "Vegetable Curries",
+//     "Mughlai Influences",
+//     "Street Food Specialties",
+//     "Seafood Selections",
+//     "Traditional Desserts",
+//     "Rice Puddings & Kheer",
+//     "Sheer Khurma",
+//     "Lassi & Yogurt Drinks",
+//     "Chai Varieties",
+//     "Halwa Creations",
+//     "Salad & Raita Innovations",
+//     "Fusion Desi Snacks"
+//   ];
+
+//   // Validate that categories is an array and has at most 3 items
+//   if (!Array.isArray(categories) || categories.length > 3) {
+//     return res.status(400).json({ msg: 'Please select up to 3 categories.' });
+//   }
+
+//   // Validate each selected category is allowed
+//   for (let cat of categories) {
+//     if (!ALLOWED_CATEGORIES.includes(cat)) {
+//       return res.status(400).json({ msg: `Invalid category selected: ${cat}` });
+//     }
+//   }
+
+//   try {
+//     const newRecipe = new Recipe({
+//       title,
+//       steps,
+//       image,
+//       caption,
+//       categories,          // Saving the selected category strings
+//       user: req.user.id
+//     });
+
+//     await newRecipe.save();
+//     res.status(201).json(newRecipe);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send('Server error');
+//   }
+// });
+
+router.get('/quick', guestMiddleware, async (req, res) => {
+  try {
+    // Use aggregation to compute the total time in minutes for each recipe
+    const recipes = await Recipe.aggregate([
+      {
+        $addFields: {
+          totalTime: {
+            $sum: {
+              $map: {
+                input: "$steps",
+                as: "step",
+                in: {
+                  $add: [
+                    { $multiply: [{ $ifNull: ["$$step.time.hours", 0] }, 60] },
+                    { $ifNull: ["$$step.time.minutes", 0] }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      { $match: { totalTime: { $lte: 30 } } },
+      {
+        $lookup: {
+          from: "users",            // collection name for User documents
+          localField: "user",
+          foreignField: "_id",
+          as: "user"
+        }
+      },
+      {
+        $unwind: { path: "$user", preserveNullAndEmptyArrays: true }
+      }
+    ]);
+    res.json(recipes);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -124,6 +221,7 @@ router.get('/:id/step-by-step', async (req, res) => {
         stepNumber: index + 1,
         description: step.description,
         ingredients: step.ingredients,
+        quantity: steps.quantity,
         timer: step.time ? {
           hours: step.time.hours || 0,
           minutes: step.time.minutes || 0
@@ -172,6 +270,23 @@ router.get('/search', guestMiddleware, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+// --------added by Azaan
+
+// Get all liked recipe IDs for current user
+router.get('/liked', authMiddleware, async (req, res) => {
+  try {
+    const likedRecipes = await Like.find({ user: req.user.id }).select('recipe');
+    const likedIds = likedRecipes.map(like => like.recipe.toString());
+    res.json(likedIds);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+
+// --------added by Azaan
 
 
 // GET single recipe by ID (public)

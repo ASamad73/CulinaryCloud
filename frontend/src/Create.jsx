@@ -334,228 +334,640 @@
 
 
 
-import { useState } from "react";
+// import { useState } from "react";
+// import Select from 'react-select'
 
-function Create(props) {
-    const [title, setTitle] = useState("");
-    const [steps, setSteps] = useState([{ id: 1, ingredients: [""], description: "", time: { hrs: "", mins: "" } }]);
-    const [imageBase64, setImageBase64] = useState("");
-    const [caption, setCaption] = useState("");
-    const [categories, setCategories] = useState([]);
+// function Create(props) {
+//     const [title, setTitle] = useState("");
+//     const [steps, setSteps] = useState([{ id: 1, ingredients: [""], description: "", time: { hrs: "", mins: "" } }]);
+//     const [imageBase64, setImageBase64] = useState("");
+//     const [caption, setCaption] = useState("");
+//     const [categories, setCategories] = useState([]);
 
-    const addStep = () => {
-        setSteps([...steps, { id: steps.length + 1, ingredients: [""], description: "", time: { hrs: "", mins: "" } }]);
-    };
+//     const categoryOptions = [
+//         { value: "Biryani Varieties", label: "Biryani Varieties" },
+//         { value: "Nihari Delicacies", label: "Nihari Delicacies" },
+//         { value: "Karahi Creations", label: "Karahi Creations" },
+//         { value: "Korma Specialties", label: "Korma Specialties" },
+//         { value: "Haleem Masterpieces", label: "Haleem Masterpieces" },
+//         { value: "Kebab Assortments", label: "Kebab Assortments" },
+//         { value: "Tandoori Treats", label: "Tandoori Treats" },
+//         { value: "Curry Classics", label: "Curry Classics" },
+//         { value: "Pulao Dishes", label: "Pulao Dishes" },
+//         { value: "Daal Delights", label: "Daal Delights" },
+//         { value: "Chaat Sensations", label: "Chaat Sensations" },
+//         { value: "Paratha Varieties", label: "Paratha Varieties" },
+//         { value: "Naan & Flatbreads", label: "Naan & Flatbreads" },
+//         { value: "Samosa Selections", label: "Samosa Selections" },
+//         { value: "Pakora & Bhaji", label: "Pakora & Bhaji" },
+//         { value: "Pickles & Chutneys", label: "Pickles & Chutneys" },
+//         { value: "Raita & Yogurt Dishes", label: "Raita & Yogurt Dishes" },
+//         { value: "Saag & Green Vegetable Curries", label: "Saag & Green Vegetable Curries" },
+//         { value: "Vegetable Curries", label: "Vegetable Curries" },
+//         { value: "Mughlai Influences", label: "Mughlai Influences" },
+//         { value: "Street Food Specialties", label: "Street Food Specialties" },
+//         { value: "Seafood Selections", label: "Seafood Selections" },
+//         { value: "Traditional Desserts", label: "Traditional Desserts" },
+//         { value: "Rice Puddings & Kheer", label: "Rice Puddings & Kheer" },
+//         { value: "Sheer Khurma", label: "Sheer Khurma" },
+//         { value: "Lassi & Yogurt Drinks", label: "Lassi & Yogurt Drinks" },
+//         { value: "Chai Varieties", label: "Chai Varieties" },
+//         { value: "Halwa Creations", label: "Halwa Creations" },
+//         { value: "Salad & Raita Innovations", label: "Salad & Raita Innovations" },
+//         { value: "Fusion Desi Snacks", label: "Fusion Desi Snacks" }
+//       ];      
 
-    const updateIngredient = (stepIndex, ingredientIndex, value) => {
-        const newSteps = [...steps];
-        newSteps[stepIndex].ingredients[ingredientIndex] = value;
-        setSteps(newSteps);
-    };
 
-    const addIngredient = (stepIndex) => {
-        const newSteps = [...steps];
-        newSteps[stepIndex].ingredients.push("");
-        setSteps(newSteps);
-    };
+//     const addStep = () => {
+//         setSteps([...steps, { id: steps.length + 1, ingredients: [""], description: "", time: { hrs: "", mins: "" } }]);
+//     };
 
-    const removeIngredient = (stepIndex) => {
-        const newSteps = [...steps];
-        if (newSteps[stepIndex].ingredients.length > 1) {
-            newSteps[stepIndex].ingredients.pop();
-            setSteps(newSteps);
-        }
-    };
+//     const updateIngredient = (stepIndex, ingredientIndex, value) => {
+//         const newSteps = [...steps];
+//         newSteps[stepIndex].ingredients[ingredientIndex] = value;
+//         setSteps(newSteps);
+//     };
 
-    const deleteStep = (stepIndex) => {
-        if (stepIndex > 0) {
-            setSteps(steps.filter((_, index) => index !== stepIndex));
-        }
-    };
+//     const addIngredient = (stepIndex) => {
+//         const newSteps = [...steps];
+//         newSteps[stepIndex].ingredients.push("");
+//         setSteps(newSteps);
+//     };
 
-    const updateStepField = (stepIndex, field, value) => {
-        const newSteps = [...steps];
-        if (field === "description") {
-            newSteps[stepIndex].description = value;
-        } else if (field === "hrs" || field === "mins") {
-            newSteps[stepIndex].time[field] = value;
-        }
-        setSteps(newSteps);
-    };
+//     const removeIngredient = (stepIndex) => {
+//         const newSteps = [...steps];
+//         if (newSteps[stepIndex].ingredients.length > 1) {
+//             newSteps[stepIndex].ingredients.pop();
+//             setSteps(newSteps);
+//         }
+//     };
 
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImageBase64(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+//     const deleteStep = (stepIndex) => {
+//         if (stepIndex > 0) {
+//             setSteps(steps.filter((_, index) => index !== stepIndex));
+//         }
+//     };
 
-    const handleSubmit = async () => {
-        const token = localStorage.getItem("token");
-        const payload = {
-            title,
-            steps,
-            image: imageBase64,
-            caption,
-            categories,
-        };
+//     const updateStepField = (stepIndex, field, value) => {
+//         const newSteps = [...steps];
+//         if (field === "description") {
+//             newSteps[stepIndex].description = value;
+//         } else if (field === "hrs" || field === "mins") {
+//             newSteps[stepIndex].time[field] = value;
+//         }
+//         setSteps(newSteps);
+//     };
 
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/recipes`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "x-auth-token": token,
-                },
-                body: JSON.stringify(payload),
-            });
+//     const handleImageUpload = (event) => {
+//         const file = event.target.files[0];
+//         if (file) {
+//             const reader = new FileReader();
+//             reader.onloadend = () => {
+//                 setImageBase64(reader.result);
+//             };
+//             reader.readAsDataURL(file);
+//         }
+//     };
+
+//     const handleSubmit = async () => {
+//         const token = localStorage.getItem("token");
+//         const payload = {
+//             title,
+//             steps,
+//             image: imageBase64,
+//             caption,
+//             categories,
+//         };
+
+//         try {
+//             const response = await fetch(`${import.meta.env.VITE_API_URL}/recipes`, {
+//                 method: "POST",
+//                 headers: {
+//                   "Content-Type": "application/json",
+//                   "x-auth-token": token,
+//                 },
+//                 body: JSON.stringify(payload),
+//             });
               
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Recipe submitted:", data);
-                alert("Recipe posted!");
-                // Optionally: navigate("/home");
-            } else {
-                const err = await response.json();
-                alert(err.msg || "Failed to post recipe");
-            }
-        } catch (err) {
-            console.error("Submission error:", err);
-        }
-    };
+//             if (response.ok) {
+//                 const data = await response.json();
+//                 console.log("Recipe submitted:", data);
+//                 alert("Recipe posted!");
+//                 // Optionally: navigate("/home");
+//             } else {
+//                 const err = await response.json();
+//                 alert(err.msg || "Failed to post recipe");
+//             }
+//         } catch (err) {
+//             console.error("Submission error:", err);
+//         }
+//     };
 
-    return (
-        <div className="post-recipe">
-            <input
-                type="text"
-                placeholder="Recipe Title"
-                className="recipe-title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
+//     return (
+//         <div className="post-recipe">
+//             <input
+//                 type="text"
+//                 placeholder="Recipe Title"
+//                 className="recipe-title"
+//                 value={title}
+//                 onChange={(e) => setTitle(e.target.value)}
+//             />
 
-            {steps.map((step, stepIndex) => (
-                <div key={step.id}>
-                    <h3 className="step-number">Step {stepIndex + 1}</h3>
-                    <h5 className="step-titles">Ingredients</h5>
-                    <div className="ingredients">
-                        {step.ingredients.map((ingredient, ingredientIndex) => (
-                            <div key={ingredientIndex} className="single-ingredient">
-                                <input
-                                    type="text"
-                                    placeholder={`Ingredient ${ingredientIndex + 1}`}
-                                    className="input-fields"
-                                    value={ingredient}
-                                    onChange={(e) =>
-                                        updateIngredient(stepIndex, ingredientIndex, e.target.value)
-                                    }
-                                />
-                                {ingredientIndex === step.ingredients.length - 1 && (
-                                    <div className="ingredient-btns">
-                                        <button
-                                            onClick={() => addIngredient(stepIndex)}
-                                            className="add-ingredients"
-                                        >
-                                            Add
-                                        </button>
-                                        <button
-                                            className="remove-ingredients"
-                                            onClick={() => removeIngredient(stepIndex)}
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    <h5 className="step-titles">Description</h5>
-                    <input
-                        type="text"
-                        placeholder="Explanation of this step"
-                        className="input-fields"
-                        value={step.description}
-                        onChange={(e) =>
-                            updateStepField(stepIndex, "description", e.target.value)
-                        }
-                    />
-                    <h5 className="step-titles">Time (if applicable)</h5>
-                    <div className="time-container">
-                        <input
-                            type="number"
-                            placeholder="hrs"
-                            className="time-field1"
-                            value={step.time.hrs}
-                            onChange={(e) =>
-                                updateStepField(stepIndex, "hrs", e.target.value)
-                            }
-                        />
-                        <input
-                            type="number"
-                            placeholder="mins"
-                            className="time-field2"
-                            value={step.time.mins}
-                            onChange={(e) =>
-                                updateStepField(stepIndex, "mins", e.target.value)
-                            }
-                        />
-                    </div>
-                </div>
+//             {steps.map((step, stepIndex) => (
+//                 <div key={step.id}>
+//                     <h3 className="step-number">Step {stepIndex + 1}</h3>
+//                     <h5 className="step-titles">Ingredients</h5>
+//                     <div className="ingredients">
+//                         {step.ingredients.map((ingredient, ingredientIndex) => (
+//                             <div key={ingredientIndex} className="single-ingredient">
+//                                 <input
+//                                     type="text"
+//                                     placeholder={`Ingredient ${ingredientIndex + 1}`}
+//                                     className="input-fields"
+//                                     value={ingredient}
+//                                     onChange={(e) =>
+//                                         updateIngredient(stepIndex, ingredientIndex, e.target.value)
+//                                     }
+//                                 />
+//                                 {ingredientIndex === step.ingredients.length - 1 && (
+//                                     <div className="ingredient-btns">
+//                                         <button
+//                                             onClick={() => addIngredient(stepIndex)}
+//                                             className="add-ingredients"
+//                                         >
+//                                             Add
+//                                         </button>
+//                                         <button
+//                                             className="remove-ingredients"
+//                                             onClick={() => removeIngredient(stepIndex)}
+//                                         >
+//                                             Remove
+//                                         </button>
+//                                     </div>
+//                                 )}
+//                             </div>
+//                         ))}
+//                     </div>
+//                     <h5 className="step-titles">Description</h5>
+//                     <input
+//                         type="text"
+//                         placeholder="Explanation of this step"
+//                         className="input-fields"
+//                         value={step.description}
+//                         onChange={(e) =>
+//                             updateStepField(stepIndex, "description", e.target.value)
+//                         }
+//                     />
+//                     <h5 className="step-titles">Time (if applicable)</h5>
+//                     <div className="time-container">
+//                         <input
+//                             type="number"
+//                             placeholder="hrs"
+//                             className="time-field1"
+//                             value={step.time.hrs}
+//                             onChange={(e) =>
+//                                 updateStepField(stepIndex, "hrs", e.target.value)
+//                             }
+//                         />
+//                         <input
+//                             type="number"
+//                             placeholder="mins"
+//                             className="time-field2"
+//                             value={step.time.mins}
+//                             onChange={(e) =>
+//                                 updateStepField(stepIndex, "mins", e.target.value)
+//                             }
+//                         />
+//                     </div>
+//                 </div>
+//             ))}
+
+//             <button className="delete-step" onClick={() => deleteStep(steps.length - 1)}>
+//                 Delete Step
+//             </button>
+//             <div className="add-step">
+//                 <button className="step-btn" onClick={addStep}>+</button>
+//                 <p className="step-txt">Add Step</p>
+//             </div>
+
+//             <div className="image" onClick={() => document.getElementById("imageUpload").click()}>
+//                 <i className="fa-solid fa-paperclip" style={{ cursor: "pointer" }}></i>
+//                 <p className="image-txt">Upload Image</p>
+//             </div>
+//             <input
+//                 type="file"
+//                 id="imageUpload"
+//                 accept="image/*"
+//                 style={{ display: "none" }}
+//                 onChange={handleImageUpload}
+//             />
+//             {imageBase64 && (
+//                 <img src={imageBase64} alt="Uploaded" className="uploaded-image" />
+//             )}
+
+//             <input
+//                 type="text"
+//                 placeholder="Caption (optional)"
+//                 className="caption-field"
+//                 value={caption}
+//                 onChange={(e) => setCaption(e.target.value)}
+//             />
+//             <Select
+//                 isMulti
+//                 name="categories"
+//                 options={categoryOptions}
+//                 className="category-dropdown"
+//                 classNamePrefix="select"
+//                 value={categoryOptions.filter((option) => categories.includes(option.value))}
+//                 onChange={(selected) => {
+//                     if (selected.length <= 3) {
+//                     setCategories(selected.map((s) => s.value));
+//                     }
+//                 }}
+//                 placeholder="Select up to 3 categories"
+//                 styles={{
+//                     control: (base, state) => ({
+//                     ...base,
+//                     backgroundColor: "#fff",
+//                     borderColor: state.isFocused ? "#6CBF84" : "#ccc",
+//                     boxShadow: state.isFocused ? "0 0 0 2px rgba(108, 191, 132, 0.3)" : "none",
+//                     borderRadius: "6px",
+//                     minHeight: "48px",
+//                     fontSize: "0.95rem",
+//                     transition: "all 0.2s ease",
+//                     }),
+//                     multiValue: (base) => ({
+//                     ...base,
+//                     backgroundColor: "#6CBF84",
+//                     color: "white",
+//                     borderRadius: "4px",
+//                     padding: "0 4px",
+//                     }),
+//                     multiValueLabel: (base) => ({
+//                     ...base,
+//                     color: "white",
+//                     fontWeight: "500"
+//                     }),
+//                     option: (base, state) => ({
+//                     ...base,
+//                     backgroundColor: state.isSelected
+//                         ? "#2E7D32"
+//                         : state.isFocused
+//                         ? "#F1F8E9"
+//                         : "white",
+//                     color: state.isSelected ? "white" : "#333",
+//                     padding: "10px",
+//                     }),
+//                 }}
+//             />
+//             <button className="submit-part" onClick={()=>{handleSubmit(props.setPost((prev)=>!prev)); set}}>
+//                 Submit
+//             </button>
+//         </div>
+//     );
+// }
+
+// export default Create;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { useState } from "react";
+import Select from "react-select";
+
+function Create(props) {
+  // Initialize steps with an object structure for ingredients and proper time keys
+  const [title, setTitle] = useState("");
+  const [steps, setSteps] = useState([
+    { 
+      id: 1, 
+      ingredients: [{ name: "", quantity: "" }], 
+      description: "", 
+      time: { hours: "", minutes: "" } 
+    }
+  ]);
+  const [imageBase64, setImageBase64] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [caption, setCaption] = useState("");
+  const [categories, setCategories] = useState([]);
+
+  const categoryOptions = [
+    { value: "Biryani Varieties", label: "Biryani Varieties" },
+    { value: "Nihari Delicacies", label: "Nihari Delicacies" },
+    { value: "Karahi Creations", label: "Karahi Creations" },
+    { value: "Korma Specialties", label: "Korma Specialties" },
+    { value: "Haleem Masterpieces", label: "Haleem Masterpieces" },
+    { value: "Kebab Assortments", label: "Kebab Assortments" },
+    { value: "Tandoori Treats", label: "Tandoori Treats" },
+    { value: "Curry Classics", label: "Curry Classics" },
+    { value: "Pulao Dishes", label: "Pulao Dishes" },
+    { value: "Daal Delights", label: "Daal Delights" },
+    { value: "Chaat Sensations", label: "Chaat Sensations" },
+    { value: "Paratha Varieties", label: "Paratha Varieties" },
+    { value: "Naan & Flatbreads", label: "Naan & Flatbreads" },
+    { value: "Samosa Selections", label: "Samosa Selections" },
+    { value: "Pakora & Bhaji", label: "Pakora & Bhaji" },
+    { value: "Pickles & Chutneys", label: "Pickles & Chutneys" },
+    { value: "Raita & Yogurt Dishes", label: "Raita & Yogurt Dishes" },
+    { value: "Saag & Green Vegetable Curries", label: "Saag & Green Vegetable Curries" },
+    { value: "Vegetable Curries", label: "Vegetable Curries" },
+    { value: "Mughlai Influences", label: "Mughlai Influences" },
+    { value: "Street Food Specialties", label: "Street Food Specialties" },
+    { value: "Seafood Selections", label: "Seafood Selections" },
+    { value: "Traditional Desserts", label: "Traditional Desserts" },
+    { value: "Rice Puddings & Kheer", label: "Rice Puddings & Kheer" },
+    { value: "Sheer Khurma", label: "Sheer Khurma" },
+    { value: "Lassi & Yogurt Drinks", label: "Lassi & Yogurt Drinks" },
+    { value: "Chai Varieties", label: "Chai Varieties" },
+    { value: "Halwa Creations", label: "Halwa Creations" },
+    { value: "Salad & Raita Innovations", label: "Salad & Raita Innovations" },
+    { value: "Fusion Desi Snacks", label: "Fusion Desi Snacks" }
+  ];
+
+  const addStep = () => {
+    setSteps([
+      ...steps,
+      { 
+        id: steps.length + 1, 
+        ingredients: [{ name: "", quantity: "" }], 
+        description: "", 
+        time: { hours: "", minutes: "" } 
+      }
+    ]);
+  };
+
+  // Update ingredient "name" property since our schema expects an object
+  const updateIngredient = (stepIndex, ingredientIndex, value) => {
+    const newSteps = [...steps];
+    newSteps[stepIndex].ingredients[ingredientIndex].name = value;
+    setSteps(newSteps);
+  };
+
+  const addIngredient = (stepIndex) => {
+    const newSteps = [...steps];
+    newSteps[stepIndex].ingredients.push({ name: "", quantity: "" });
+    setSteps(newSteps);
+  };
+
+  const removeIngredient = (stepIndex) => {
+    const newSteps = [...steps];
+    if (newSteps[stepIndex].ingredients.length > 1) {
+      newSteps[stepIndex].ingredients.pop();
+      setSteps(newSteps);
+    }
+  };
+
+  const deleteStep = (stepIndex) => {
+    if (stepIndex > 0) {
+      setSteps(steps.filter((_, index) => index !== stepIndex));
+    }
+  };
+
+  const updateStepField = (stepIndex, field, value) => {
+    const newSteps = [...steps];
+    if (field === "description") {
+      newSteps[stepIndex].description = value;
+    } else if (field === "hours" || field === "minutes") {
+      newSteps[stepIndex].time[field] = value;
+    }
+    setSteps(newSteps);
+  };
+
+  // Image upload: store both the file for submission and a Base64 preview.
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageBase64(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+
+    // Create FormData to send multipart/form-data to the backend.
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("steps", JSON.stringify(steps));
+    formData.append("caption", caption);
+    formData.append("categories", JSON.stringify(categories));
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/recipes`, {
+        method: "POST",
+        headers: {
+          "x-auth-token": token
+          // Do not set "Content-Type" manually when using FormData
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Recipe submitted:", data);
+        alert("Recipe posted!");
+        // Optionally, trigger a navigation or state update
+      } else {
+        const err = await response.json();
+        alert(err.msg || "Failed to post recipe");
+      }
+    } catch (err) {
+      console.error("Submission error:", err);
+    }
+  };
+
+  return (
+    <div className="post-recipe">
+      <input
+        type="text"
+        placeholder="Recipe Title"
+        className="recipe-title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+
+      {steps.map((step, stepIndex) => (
+        <div key={step.id}>
+          <h3 className="step-number">Step {stepIndex + 1}</h3>
+          <h5 className="step-titles">Ingredients</h5>
+          <div className="ingredients">
+            {step.ingredients.map((ingredient, ingredientIndex) => (
+              <div key={ingredientIndex} className="single-ingredient">
+                <input
+                  type="text"
+                  placeholder={`Ingredient ${ingredientIndex + 1}`}
+                  className="input-fields"
+                  value={ingredient.name}
+                  onChange={(e) =>
+                    updateIngredient(stepIndex, ingredientIndex, e.target.value)
+                  }
+                />
+                {ingredientIndex === step.ingredients.length - 1 && (
+                  <div className="ingredient-btns">
+                    <button
+                      onClick={() => addIngredient(stepIndex)}
+                      className="add-ingredients"
+                    >
+                      Add
+                    </button>
+                    <button
+                      className="remove-ingredients"
+                      onClick={() => removeIngredient(stepIndex)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
             ))}
-
-            <button className="delete-step" onClick={() => deleteStep(steps.length - 1)}>
-                Delete Step
-            </button>
-            <div className="add-step">
-                <button className="step-btn" onClick={addStep}>+</button>
-                <p className="step-txt">Add Step</p>
-            </div>
-
-            <div className="image" onClick={() => document.getElementById("imageUpload").click()}>
-                <i className="fa-solid fa-paperclip" style={{ cursor: "pointer" }}></i>
-                <p className="image-txt">Upload Image</p>
-            </div>
+          </div>
+          <h5 className="step-titles">Description</h5>
+          <input
+            type="text"
+            placeholder="Explanation of this step"
+            className="input-fields"
+            value={step.description}
+            onChange={(e) =>
+              updateStepField(stepIndex, "description", e.target.value)
+            }
+          />
+          <h5 className="step-titles">Time (if applicable)</h5>
+          <div className="time-container">
             <input
-                type="file"
-                id="imageUpload"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleImageUpload}
+              type="number"
+              placeholder="hours"
+              className="time-field1"
+              value={step.time.hours}
+              onChange={(e) =>
+                updateStepField(stepIndex, "hours", e.target.value)
+              }
             />
-            {imageBase64 && (
-                <img src={imageBase64} alt="Uploaded" className="uploaded-image" />
-            )}
-
             <input
-                type="text"
-                placeholder="Caption (optional)"
-                className="caption-field"
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
+              type="number"
+              placeholder="minutes"
+              className="time-field2"
+              value={step.time.minutes}
+              onChange={(e) =>
+                updateStepField(stepIndex, "minutes", e.target.value)
+              }
             />
-
-            <input
-                type="text"
-                placeholder="Add up to 3 categories (comma-separated)"
-                className="caption-field"
-                onChange={(e) => {
-                    const values = e.target.value.split(",").map((val) => val.trim());
-                    setCategories(values.slice(0, 3));
-                }}
-            />
-
-            <div className="submit">
-                <button className="submit-part" onClick={()=>{handleSubmit(props.setPost((prev)=>!prev)); set}}>
-                    Submit
-                </button>
-            </div>
+          </div>
         </div>
-    );
+      ))}
+
+      <button className="delete-step" onClick={() => deleteStep(steps.length - 1)}>
+        Delete Step
+      </button>
+      <div className="add-step">
+        <button className="step-btn" onClick={addStep}>+</button>
+        <p className="step-txt">Add Step</p>
+      </div>
+
+      <div className="image" onClick={() => document.getElementById("imageUpload").click()}>
+        <i className="fa-solid fa-paperclip" style={{ cursor: "pointer" }}></i>
+        <p className="image-txt">Upload Image</p>
+      </div>
+      <input
+        type="file"
+        id="imageUpload"
+        accept="image/*"
+        style={{ display: "none" }}
+        onChange={handleImageUpload}
+      />
+      {imageBase64 && (
+        <img src={imageBase64} alt="Uploaded" className="uploaded-image" />
+      )}
+
+      <input
+        type="text"
+        placeholder="Caption (optional)"
+        className="caption-field"
+        value={caption}
+        onChange={(e) => setCaption(e.target.value)}
+      />
+
+      <Select
+        isMulti
+        name="categories"
+        options={categoryOptions}
+        className="category-dropdown"
+        classNamePrefix="select"
+        value={categoryOptions.filter((option) => categories.includes(option.value))}
+        onChange={(selected) => {
+          if (selected.length <= 3) {
+            setCategories(selected.map((s) => s.value));
+          }
+        }}
+        placeholder="Select up to 3 categories"
+        styles={{
+          control: (base, state) => ({
+            ...base,
+            backgroundColor: "#fff",
+            borderColor: state.isFocused ? "#6CBF84" : "#ccc",
+            boxShadow: state.isFocused ? "0 0 0 2px rgba(108, 191, 132, 0.3)" : "none",
+            borderRadius: "6px",
+            minHeight: "48px",
+            fontSize: "0.95rem",
+            transition: "all 0.2s ease",
+          }),
+          multiValue: (base) => ({
+            ...base,
+            backgroundColor: "#6CBF84",
+            color: "white",
+            borderRadius: "4px",
+            padding: "0 4px",
+          }),
+          multiValueLabel: (base) => ({
+            ...base,
+            color: "white",
+            fontWeight: "500",
+          }),
+          option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isSelected
+              ? "#2E7D32"
+              : state.isFocused
+              ? "#F1F8E9"
+              : "white",
+            color: state.isSelected ? "white" : "#333",
+            padding: "10px",
+          }),
+        }}
+      />
+      <button className="submit-part" onClick={handleSubmit}>
+        Submit
+      </button>
+    </div>
+  );
 }
 
 export default Create;

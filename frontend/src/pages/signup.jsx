@@ -10,13 +10,12 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // Store the actual file rather than a string URL.
   const [profilePicture, setProfilePicture] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [bio, setBio] = useState("");
 
-  // Handle dietary preference checkboxes.
   const handleCategoryChange = (e) => {
     const { value, checked } = e.target;
     if (checked) {
@@ -30,7 +29,6 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
     }
   };
 
-  // Handle file selection for profile picture.
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setProfilePicture(e.target.files[0]);
@@ -49,18 +47,17 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
     }
 
     try {
-      // Create a FormData object to handle file upload along with other fields.
       const formData = new FormData();
       formData.append("email", email);
       formData.append("password", password);
-      // Append the file if selected.
       if (profilePicture) {
         formData.append("profilePicture", profilePicture);
       }
-      // Append dietary preferences as a JSON string.
       formData.append("dietaryPreferences", JSON.stringify(selectedCategories));
-
-      // Send a POST request to your backend registration endpoint.
+      if(bio)
+      {
+        formData.append("bio",bio);
+      }
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/register`,
         formData,
@@ -69,10 +66,14 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
         }
       );
 
-      // Assume the backend returns a token and user object.
-      const { token, user } = response.data;
+      const { token } = response.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+
+      // Optional: Fetch user info after registration
+      // const userRes = await axios.get(`${import.meta.env.VITE_API_URL}/user/me`, {
+      //   headers: { Authorization: `Bearer ${token}` }
+      // });
+      // localStorage.setItem("user", JSON.stringify(userRes.data));
 
       onAuthSuccess();
     } catch (err) {
@@ -95,25 +96,25 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
       {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
       <form className="space-y-4" onSubmit={handleSignup}>
-        <InputField 
-          label="Email" 
-          type="email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
+        <InputField
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
-        <InputField 
-          label="Password" 
-          type="password" 
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)} 
+        <InputField
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
-        <InputField 
-          label="Confirm Password" 
-          type="password" 
-          value={confirmPassword} 
-          onChange={(e) => setConfirmPassword(e.target.value)} 
+        <InputField
+          label="Confirm Password"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
-        {/* New file input for uploading the profile picture */}
+
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
             Profile Picture
@@ -125,16 +126,32 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
             className="mt-1 block w-full"
           />
         </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Bio</label>
+          <textarea
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+            rows={4}
+            placeholder="Tell us a bit about yourself..."
+          />
+        </div>
+
         <DietaryPreferencesSelector
           allowedCategories={ALLOWED_CATEGORIES}
           selectedCategories={selectedCategories}
           onCategoryChange={handleCategoryChange}
         />
+
         <Button text="Sign up" loading={loading} onClick={handleSignup} />
       </form>
 
       <div className="flex justify-between text-sm text-gray-600 mt-4">
-        <button onClick={toggleScreen} className="text-green-700 font-semibold hover:underline">
+        <button
+          onClick={toggleScreen}
+          className="text-green-700 font-semibold hover:underline"
+        >
           Already have an account? Log in
         </button>
       </div>

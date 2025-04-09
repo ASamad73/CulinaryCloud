@@ -6,94 +6,64 @@ import Recipe from "../Recipe";
 import Profile from "../Profile";
 import Create from "../Create";
 import GuestTimeoutModal from "../components/GuestTimeoutModal";
+// import QuickRecipes from "QuickRecipes.jsx";  // Import the Quick Recipes page
 
-export default function Dashboard() {
+export default function Dashboard({ isGuest, onLogout }) {
   const [post, setPost] = useState(false);
-  const [isGuest, setIsGuest] = useState(false);
+  const [profile, setProfile] = useState(false);
   const [showGuestModal, setShowGuestModal] = useState(false);
-  const [profile,setProfile] = useState(false);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  // Step 1: Extract the token from the URL when the component mounts
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const token = queryParams.get("token");
-    if (token) {
-      // Save the token for authenticated requests
-      localStorage.setItem("token", token);
-      // Optionally, update any global or local authentication state here
-
-      // Clean the URL by navigating to "/dashboard" without the query parameters
-      navigate("/dashboard", { replace: true });
-    }
-  }, [location, navigate]);
-
-  // Step 2: Check if the user is a guest and set up the timeout to show modal
-  useEffect(() => {
-    const guest = localStorage.getItem("isGuest") === "true";
-    setIsGuest(guest);
-
-    if (guest) {
+    if (isGuest) {
       const timer = setTimeout(() => {
         setShowGuestModal(true);
       }, 30000);
       return () => clearTimeout(timer);
     }
-  }, []);
-
-  // Handler to log out a guest (or exit guest mode)
-  const handleGuestExit = () => {
-    setShowGuestModal(false);
-    setIsGuest(false);
-    localStorage.removeItem("isGuest");
-    localStorage.removeItem("isAuthenticated");
-    window.location.href = "/"; // Force return to login
-  };
+  }, [isGuest]);
 
   return (
-    <div className="screen">
-      <div className="page">
-        <div className="left-part">
-          <Navbar setPost={setPost} setProfile={setProfile} onLogout={handleGuestExit} />
-        </div>
-        <div className="middle-part">
-          {/* Conditional Rendering */}
-          {!post ? (
-            !profile ? (
-              <>
-                <Search />
-                <Recipe />
-              </>
+    <div className="original-page">
+      <div className="screen">
+        <div className="page">
+          <div className="left-part">
+            <Navbar setPost={setPost} setProfile={setProfile} onLogout={onLogout} />
+          </div>
+          <div className="middle-part">
+            {!post ? (
+              !profile ? (
+                <>
+                  <Search />
+                  <Recipe />
+                </>
+              ) : (
+                isGuest ? (
+                  <div className="warning-msg">
+                    <p><strong>Please sign up or log in to view your profile.</strong></p>
+                  </div>
+                ) : (
+                  <Profile />
+                )
+              )
             ) : (
-              <Profile />
-            )
-          ) : (
-            <Create setPost={setPost} />
-          )}
+              isGuest ? (
+                <div className="warning-msg">
+                  <p><strong>Please sign up or log in to create a recipe.</strong></p>
+                </div>
+              ) : (
+                <Create setPost={setPost} />
+              )
+            )}
+          </div>
         </div>
+
+        {showGuestModal && isGuest && (
+          <GuestTimeoutModal
+          onLogin={() => window.location.href = "/"}
+          onSignup={() => window.location.href = "/"}
+          />
+        )}
       </div>
-  
-      {/* Guest timeout popup */}
-      {showGuestModal && isGuest && (
-        <GuestTimeoutModal
-          onLogin={handleGuestExit}
-          onSignup={handleGuestExit}
-        />
-      )}
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

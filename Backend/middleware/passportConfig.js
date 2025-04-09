@@ -19,31 +19,36 @@ passport.deserializeUser(async (id, done) => {
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID, // from your .env file
+      clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:5001/api/auth/google/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Find the user by Google ID or by email; adjust logic to suit your app.
-        let user = await User.findOne({ email: profile.emails[0].value });
+        // ✅ Safely access the email
+        const email = profile.emails?.[0]?.value;
+
+        if (!email) {
+          return done(new Error("Email not provided by Google"), null);
+        }
+
+        let user = await User.findOne({ email });
 
         if (!user) {
-          // If user not found, create a new user with Google details.
           user = new User({
-            email: profile.emails[0].value,
+            email,
             name: profile.displayName,
             auth: {
               google: { id: profile.id }
             },
-            // You can also store profile photo URL if you wish.
+            profilePicture: profile.photos?.[0]?.value || ""
           });
           await user.save();
         } else if (!user.auth.google) {
-          // If the user exists from local registration but hasn't linked Google, add the Google ID.
           user.auth.google = { id: profile.id };
           await user.save();
         }
+
         return done(null, user);
       } catch (err) {
         console.error("Google OAuth Error:", err);
@@ -52,5 +57,6 @@ passport.use(
     }
   )
 );
+
 
 module.exports = passport;
