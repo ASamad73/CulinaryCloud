@@ -126,7 +126,7 @@ export default function LoginScreen({ onAuthSuccess, toggleScreen, onGuestLogin 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   
-  const navigate = useNavigate(); // Used to programmatically redirect
+  const navigate = useNavigate(); 
 
   // Handles login through API
   const handleLogin = async (e) => {
@@ -141,7 +141,6 @@ export default function LoginScreen({ onAuthSuccess, toggleScreen, onGuestLogin 
         { email, password }
       );
 
-      // Extract token and user data
       const { token, user } = response.data;
 
       // Save to localStorage
@@ -169,7 +168,6 @@ export default function LoginScreen({ onAuthSuccess, toggleScreen, onGuestLogin 
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    // Let App.jsx manage guest session logic (timeout, flags, etc.)
     onGuestLogin();
     navigate("/dashboard");
   };

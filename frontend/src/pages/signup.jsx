@@ -69,11 +69,6 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
       const { token } = response.data;
       localStorage.setItem("token", token);
 
-      // Optional: Fetch user info after registration
-      // const userRes = await axios.get(`${import.meta.env.VITE_API_URL}/user/me`, {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-      // localStorage.setItem("user", JSON.stringify(userRes.data));
 
       onAuthSuccess();
     } catch (err) {

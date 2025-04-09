@@ -5,17 +5,14 @@ const multer = require('multer');
 const cloudinary = require('../utils/cloudinary');
 const router = express.Router();
 
-// Configure multer for memory storage
 const storage = multer.memoryStorage();
 const upload = multer({ 
   storage,
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
-// GET profile picture URL
 router.get('/profile-picture/:userId', authMiddleware, async (req, res) => {
   try {
-    // Verify the requested userId matches the logged-in user's ID
     if (req.params.userId !== req.user.id) {
       return res.status(403).send('Unauthorized access');
     }
@@ -33,7 +30,6 @@ router.get('/profile-picture/:userId', authMiddleware, async (req, res) => {
   }
 });
 
-// GET current user info
 router.get('/me', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('_id profilePicture bio email');
@@ -47,12 +43,10 @@ router.get('/me', authMiddleware, async (req, res) => {
   }
 });
 
-// UPDATE profile with image upload
 router.put('/profile', authMiddleware, upload.single('profilePicture'), async (req, res) => {
   try {
-    let profilePictureUrl = req.body.existingImage; // For when not changing image
+    let profilePictureUrl = req.body.existingImage; 
     
-    // If new file uploaded
     if (req.file) {
       // Convert buffer to base64
       const b64 = Buffer.from(req.file.buffer).toString('base64');
@@ -86,7 +80,6 @@ router.put('/profile', authMiddleware, upload.single('profilePicture'), async (r
 });
 
 
-// GET bio of current user
 router.get('/bio', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('bio');
@@ -100,7 +93,6 @@ router.get('/bio', authMiddleware, async (req, res) => {
   }
 });
 
-// PUT bio for current user
 router.put('/bio', authMiddleware, async (req, res) => {
   try {
     const { bio } = req.body;

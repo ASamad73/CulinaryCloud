@@ -98,7 +98,6 @@ function App() {
           }
         />
 
-        {/* ✅ These are now protected */}
         <Route
           path="/profile"
           element={

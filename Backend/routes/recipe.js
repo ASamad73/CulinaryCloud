@@ -1,9 +1,9 @@
 const express = require('express');
 const Recipe = require('../models/Recipe');
-const Like = require('../models/Like');  // Import the Like model
-const Comment = require('../models/Comment');  // Import the Like model
+const Like = require('../models/Like');  
+const Comment = require('../models/Comment');  
 
-const authMiddleware = require('../middleware/auth'); // JWT check
+const authMiddleware = require('../middleware/auth'); 
 const guestMiddleware = require('../middleware/guest');
 
 
@@ -12,7 +12,6 @@ const cloudinary = require('../utils/cloudinary');
 
 const router = express.Router();
 
-// Configure multer to store files in memory
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
@@ -23,18 +22,14 @@ const upload = multer({
 // POST /recipes - Create a new recipe
 router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   try {
-    let imageUrl = req.body.existingImage || ''; // In case there’s a default or existing image
+    let imageUrl = req.body.existingImage || ''; 
 
-    // Check if an image file is provided
     if (req.file) {
-      // Convert the file buffer to a Base64 string and create a data URI
       const b64 = req.file.buffer.toString('base64');
       const dataURI = `data:${req.file.mimetype};base64,${b64}`;
 
-      // Upload to Cloudinary (use a folder like 'recipes' to keep things organized)
       const result = await cloudinary.uploader.upload(dataURI, {
         folder: 'recipes',
-        // Optionally, add transformations like resizing:
         width: 800,
         height: 600,
         crop: 'limit'
@@ -42,7 +37,6 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
       imageUrl = result.secure_url;
     }
 
-    // Create a new Recipe document
     const newRecipe = new Recipe({
       title: req.body.title,
       steps: JSON.parse(req.body.steps || '[]'), // If you're sending steps as JSON string
@@ -173,17 +167,6 @@ router.get('/quick', guestMiddleware, async (req, res) => {
 });
 
 
-// GET all recipes (public)
-// router.get('/', async (req, res) => {
-//   try {
-//     const recipes = await Recipe.find().populate('user', 'username');
-//     res.json(recipes);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send('Server error');
-//   }
-// });
-
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // GET limited recipes (public)
 router.get('/', guestMiddleware, async (req, res) => {
@@ -203,6 +186,21 @@ router.get('/', guestMiddleware, async (req, res) => {
 });
 
 
+// GET recipes made by the authenticated user
+router.get('/myrecipes', authMiddleware, async (req, res) => {
+  try {
+    const recipes = await Recipe.find({ user: req.user.id })
+      .populate('user', 'username')
+      .sort({ createdAt: -1 });  
+
+    res.json(recipes);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+
 // added by Azaan ----------------------------------------------------------------------
 
 // Step-by-Step Cooking Mode
@@ -214,7 +212,6 @@ router.get('/:id/step-by-step', async (req, res) => {
       return res.status(404).json({ msg: 'Recipe not found' });
     }
 
-    // Extract the step-by-step data
     const stepByStep = {
       title: recipe.title,
       steps: recipe.steps.map((step, index) => ({
@@ -238,42 +235,47 @@ router.get('/:id/step-by-step', async (req, res) => {
 
 // added by Azaan ----------------------------------------------------------------------
 
-// New Search & Filtering Endpoint
-// Place this above the GET single recipe route (router.get('/:id', ...))
+
 router.get('/search', guestMiddleware, async (req, res) => {
   try {
     const { ingredient, cuisine, page = 1, limit = 10 } = req.query;
     const queryObject = {};
 
-    // If an ingredient is provided, search in both steps.ingredients and title using $or
     if (ingredient) {
+      const regex = new RegExp(ingredient, 'i'); // 🔧 create a regex once
       queryObject.$or = [
-        { "steps.ingredients": { $regex: ingredient, $options: "i" } },
-        { "title": { $regex: ingredient, $options: "i" } }
+        { "steps.ingredients": regex },
+        { "title": regex }
       ];
     }
+    
 
-    // If a cuisine is provided, filter by categories
     if (cuisine) {
-      queryObject["categories"] = { $regex: cuisine, $options: "i" };
+      queryObject.categories = { $regex: cuisine, $options: "i" };
+    }
+
+    if (Object.keys(queryObject).length === 0) {
+      return res.status(400).json({ msg: "No search parameters provided." });
     }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
+    console.log("queryObject being used:", queryObject);
+    console.log("ingredient:", ingredient);
+    console.log("typeof ingredient:", typeof ingredient);
     const recipes = await Recipe.find(queryObject)
-      .populate('user', 'username')
+      .populate("user", "username")
       .skip(skip)
       .limit(parseInt(limit));
 
     res.json(recipes);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    console.error("Error in /search:", err.message);
+    res.status(500).json({ msg: "Server error" }); // 
   }
 });
 
 // --------added by Azaan
 
-// Get all liked recipe IDs for current user
 router.get('/liked', authMiddleware, async (req, res) => {
   try {
     const likedRecipes = await Like.find({ user: req.user.id }).select('recipe');
@@ -288,8 +290,6 @@ router.get('/liked', authMiddleware, async (req, res) => {
 
 // --------added by Azaan
 
-
-// GET single recipe by ID (public)
 router.get('/:id', async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id).populate('user', 'username');
@@ -301,7 +301,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// UPDATE a recipe (only by owner)
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
@@ -340,7 +339,6 @@ router.delete('/:id', authMiddleware, async (req, res) => {
       return res.status(404).json({ msg: 'Recipe not found' });
     }
 
-    // Make sure the logged-in user is the owner
     if (recipe.user.toString() !== req.user.id) {
       return res.status(401).json({ msg: 'Not authorized to delete this recipe' });
     }
@@ -356,7 +354,6 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 });
 
 
-//we are liking a post here
 router.post('/:id/like', authMiddleware, async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);

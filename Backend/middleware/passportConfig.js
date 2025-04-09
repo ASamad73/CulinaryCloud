@@ -1,7 +1,7 @@
 // middleware/passportConfig.js
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../models/User'); // Adjust the path if necessary
+const User = require('../models/User'); 
 
 passport.serializeUser((user, done) => {
   done(null, user._id);
@@ -25,7 +25,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // ✅ Safely access the email
+        //  Safely access the email
         const email = profile.emails?.[0]?.value;
 
         if (!email) {

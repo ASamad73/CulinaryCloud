@@ -1,27 +1,20 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-// Define a sub-schema for local authentication
 const AuthLocalSchema = new mongoose.Schema({
   password: {
     type: String,
-    // Use a custom required function:
-    // The password is required if there is no Google ID.
     required: function () {
-      // 'this' in this subdocument refers to the AuthLocalSchema instance.
-      // To check the sibling google field, we get the parent.
       const parent = this.parent();
       return !(parent.google && parent.google.id);
     }
   }
 }, { _id: false });
 
-// Define a sub-schema for Google authentication (if any)
 const AuthGoogleSchema = new mongoose.Schema({
   id: { type: String }
 }, { _id: false });
 
-// Define an authentication schema to encapsulate both local and google methods.
 const AuthSchema = new mongoose.Schema({
   local: {
     type: AuthLocalSchema,
@@ -51,7 +44,7 @@ const UserSchema = new mongoose.Schema({
     default: {}
   },
   profilePicture:{
-    type: String, // Now stores Cloudinary URL
+    type: String, 
     default: ""
   },
   dietaryPreferences: {

@@ -37,7 +37,7 @@ const StepSchema = new mongoose.Schema({
   ingredients: [
     {
       name: String, 
-      quantity: String, // or Number, depending on your use case
+      quantity: String, 
     }
   ],
   description: String,
@@ -55,11 +55,9 @@ const RecipeSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: { type: Date, default: Date.now },
 
-  // Precomputed fields for likes and comments
   likeCount: { type: Number, default: 0 },
   commentCount: { type: Number, default: 0 },
 
-  // New field for categories (array of strings) with a maximum of 3 selections
   categories: {
     type: [String],
     default: [],

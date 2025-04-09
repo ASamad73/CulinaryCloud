@@ -11,7 +11,6 @@ require('../middleware/passportConfig');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
-// Multer config: memory storage for Cloudinary upload
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -42,10 +41,6 @@ const uploadToCloudinary = async (file) => {
 // Route to start Google OAuth flow
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// Google OAuth callback route - Updated version: No sessions, then redirect with token
-
-
-// Google OAuth callback route - Updated version: No sessions, then redirect with token
 router.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: '/login', session: false }),
@@ -58,9 +53,7 @@ router.get(
     
     // Redirect the user to your frontend Dashboard with the token as a query parameter.
     res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${token}`);
-    
-    // Alternatively, you could return JSON if you're handling the redirect on the client.
-    // res.json({ token, msg: 'Google authentication successful' });
+
   }
 );
 
@@ -139,9 +132,6 @@ router.get(
 
 
 
-
-/* Local Registration Route */
-// This route now saves the local password under `auth.local.password` per the new schema.
 /* --- Local Registration Route --- */
 router.post('/register', upload.single('profilePicture'), async (req, res) => {
   const { email, password ,bio, name} = req.body;

@@ -1,21 +1,20 @@
 // src/Search.jsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
 
 function Search() {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
-    // Only trigger the API call if searchTerm is at least 2 characters long
     if (searchTerm.trim().length < 2) {
       setSuggestions([]);
       return;
     }
+
     const timer = setTimeout(() => {
-      // Replace with your actual API call, for example:
-      fetch(`http://localhost:5001/api/recipes/search?ingredient=${encodeURIComponent(searchTerm)}`)
+      fetch(`${import.meta.env.VITE_API_URL}/recipes/search?ingredient=${encodeURIComponent(searchTerm)}`)
         .then((res) => res.json())
         .then((data) => setSuggestions(data))
         .catch((err) => {
@@ -28,7 +27,6 @@ function Search() {
   }, [searchTerm]);
 
   const handleSuggestionClick = (recipe) => {
-    // When a suggestion is clicked, navigate to the search results page.
     navigate(`/search-results?recipeId=${recipe._id}`);
   };
 
@@ -49,7 +47,7 @@ function Search() {
               onClick={() => handleSuggestionClick(recipe)}
               style={{ cursor: 'pointer', padding: '8px', borderBottom: '1px solid #ccc' }}
             >
-              {recipe.title} &ndash; <em>{recipe.categories.join(', ')}</em>
+              {recipe.title} — <em>{recipe.categories.join(', ')}</em>
             </li>
           ))}
         </ul>

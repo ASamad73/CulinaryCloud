@@ -1,96 +1,179 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
+import Navbar from '../Navbar';
+import Post from '../Post';
 
-export default function QuickRecipes() {
+export default function QuickRecipes({ setPost, setProfile, onLogout }) { // Add onLogout prop
   const [recipes, setRecipes] = useState([]);
+  const [likes, setLikes] = useState({});
+  const [stars, setStars] = useState({});
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [activeCommentPostId, setActiveCommentPostId] = useState(null);
+  const [likeLocks, setLikeLocks] = useState({});
+  const navigate = useNavigate(); // Add navigation
+
+  const solid = "fa-solid fa-star";
+  const regular = "fa-regular fa-star";
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios.get(`${import.meta.env.VITE_API_URL}/recipes/quick`, {
-      headers: { 'x-auth-token': token || '' }
-    })
-    .then(response => setRecipes(response.data))
-    .catch(err => console.error("Error fetching quick recipes:", err));
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const [recipeRes, likedRes] = await Promise.all([
+          axios.get(`${import.meta.env.VITE_API_URL}/recipes/quick`, {
+            headers: { 'x-auth-token': token || '' }
+          }),
+          axios.get(`${import.meta.env.VITE_API_URL}/recipes/liked`, {
+            headers: { 'x-auth-token': token || '' }
+          }),
+        ]);
+
+        setRecipes(recipeRes.data);
+        const likedMap = {};
+        likedRes.data.forEach(id => likedMap[id] = true);
+        setLikes(likedMap);
+
+      } catch (err) {
+        console.error("Error fetching quick recipes or likes:", err);
+      }
+    };
+
+    fetchData();
   }, []);
 
+  const handleLikeToggle = async (id) => {
+    if (likeLocks[id]) return;
+
+    const token = localStorage.getItem("token");
+    const isLiked = likes[id];
+    setLikeLocks(prev => ({ ...prev, [id]: true }));
+    setLikes(prev => ({ ...prev, [id]: !isLiked }));
+    setRecipes(prev =>
+      prev.map(recipe =>
+        recipe._id === id
+          ? { ...recipe, likeCount: recipe.likeCount + (isLiked ? -1 : 1) }
+          : recipe
+      )
+    );
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/recipes/${id}/like`, {}, {
+        headers: { 'x-auth-token': token || '' }
+      });
+    } catch (err) {
+      console.error("Error liking recipe:", err);
+      setLikes(prev => ({ ...prev, [id]: isLiked }));
+      setRecipes(prev =>
+        prev.map(recipe =>
+          recipe._id === id
+            ? { ...recipe, likeCount: recipe.likeCount + (isLiked ? 1 : -1) }
+            : recipe
+        )
+      );
+    } finally {
+      setLikeLocks(prev => ({ ...prev, [id]: false }));
+    }
+  };
+
+  const handleStarClick = (id, index) => {
+    setStars(prev => ({
+      ...prev,
+      [id]: (index + 1 === prev[id] ? index : index + 1)
+    }));
+  };
+
+  const handleLearnMoreClick = (recipe) => {
+    if (selectedPost?._id === recipe._id) {
+      setSelectedPost(null);
+    } else {
+      setSelectedPost(recipe);
+    }
+  };
+
   return (
-    <div className="quick-recipes-page">
-      <h2>Quick Recipes (Under 30 Minutes)</h2>
-      {recipes.length ? recipes.map(recipe => (
-        <div key={recipe._id} className="post_container" style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
-          {/* User details */}
-          <div className="user_profile">
-            <i className="fa-solid fa-user" />
-            <div className="user_info">
-              <h4>{recipe.user && recipe.user.username ? recipe.user.username : "Unknown"}</h4>
-              <h4>Culinary Creator</h4>
-            </div>
+    <div className="original-page">
+      <div className="screen">
+        <div className="page">
+          <div className="left-part">
+            <Navbar 
+              setPost={setPost} 
+              setProfile={setProfile} 
+              onLogout={onLogout} 
+            />
           </div>
+          <div className="middle-part">
+            <h2 style={{ marginBottom: '20px' }}>Quick Recipes (Under 30 Minutes)</h2>
 
-          {/* Recipe image */}
-          {recipe.image && (
-            <img src={recipe.image} alt={recipe.title} className="recipe-image" />
-          )}
-
-          {/* Post interactions (icons can be made clickable as needed) */}
-          <div className="post_interations">
-            <div className="like_comment">
-              <i className="fa-regular fa-heart" />
-              <i className="fa-regular fa-comment" />
-            </div>
-            <div className="ratings">
-              {/* Dummy ratings icons. You can enhance this with actual ratings logic */}
-              {[...Array(5)].map((_, index) => (
-                <i key={index} className="fa-solid fa-star" />
-              ))}
-            </div>
-          </div>
-
-          {/* Likes and comments counts */}
-          <div className="post-number">
-            <p><b>{recipe.likeCount || 0} {recipe.likeCount === 1 ? "like" : "likes"}</b></p>
-            <p><b>{recipe.commentCount || 0} {recipe.commentCount === 1 ? "comment" : "comments"}</b></p>
-          </div>
-
-          {/* Title and Caption */}
-          <p className="post-description">
-            <b>{recipe.title}</b> - {recipe.caption}
-          </p>
-
-          {/* Detailed recipe information */}
-          <div className="recipe-details">
-            <p><strong>Total Time:</strong> {recipe.totalTime} minutes</p>
-            {recipe.categories && recipe.categories.length > 0 && (
-              <p><strong>Categories:</strong> {recipe.categories.join(', ')}</p>
-            )}
-            {recipe.steps && recipe.steps.length > 0 && (
-              <div className="steps">
-                <h4>Steps:</h4>
-                {recipe.steps.map((step, index) => (
-                  <div key={index} style={{ marginTop: "10px" }}>
-                    <p><strong>Step {index + 1}:</strong> {step.description}</p>
-                    {step.ingredients && (
-                      <p>
-                        <strong>Ingredients:</strong> {step.ingredients.join(', ')}
-                      </p>
-                    )}
-                    {step.time && (
-                      <p>
-                        <strong>Time:</strong> {step.time.hours || 0} hours {step.time.minutes || 0} minutes
-                      </p>
-                    )}
+            {recipes.map((recipe) => (
+              <div key={recipe._id}>
+                <div className="post_container">
+                  <div className="user_profile">
+                    <i className="fa-solid fa-user" />
+                    <div className="user_info">
+                      <h4>{recipe.user?.username || "Unknown"}</h4>
+                      <h4 id="user_badge">Culinary Creator</h4>
+                    </div>
                   </div>
-                ))}
+
+                  <img src={recipe.image} alt="Food" className="recipe-image" />
+
+                  <div className="post_interations">
+                    <div className="like_comment">
+                      <i
+                        className={likes[recipe._id] ? "fa-solid fa-heart" : "fa-regular fa-heart"}
+                        onClick={() => handleLikeToggle(recipe._id)}
+                      />
+                      <i
+                        className="fa-regular fa-comment"
+                        onClick={() => setActiveCommentPostId(recipe._id)}
+                      />
+                    </div>
+                    <div className="ratings">
+                      {[...Array(5)].map((_, index) => (
+                        <i
+                          key={index}
+                          className={index < (stars[recipe._id] || 0) ? solid : regular}
+                          onClick={() => handleStarClick(recipe._id, index)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="post-number">
+                    <p><b>{recipe.likeCount || 0} {recipe.likeCount === 1 ? "like" : "likes"}</b></p>
+                    <p><b>{(stars[recipe._id] || 0)}.0 rated</b></p>
+                  </div>
+
+                  <p className="post-description">
+                    <b>{recipe.title}</b> {recipe.caption?.slice(0, 100)}...
+                    <button
+                      className="learn-more"
+                      onClick={() => handleLearnMoreClick(recipe)}
+                    >
+                      {selectedPost?._id === recipe._id ? 'Go Back' : 'Learn More'}
+                    </button>
+                  </p>
+                </div>
+
+                {selectedPost?._id === recipe._id && (
+                  <div className="expanded-post">
+                    <Post recipe={selectedPost} />
+                  </div>
+                )}
               </div>
+            ))}
+
+            {activeCommentPostId && (
+              <CommentModal
+                recipeId={activeCommentPostId}
+                onClose={() => setActiveCommentPostId(null)}
+              />
             )}
           </div>
-
-          {/* Created date */}
-          <p><small>Created on: {new Date(recipe.createdAt).toLocaleString()}</small></p>
         </div>
-      )) : (
-        <p>No quick recipes found.</p>
-      )}
+      </div>
     </div>
   );
 }

@@ -1,79 +1,103 @@
-// src/SearchResults.jsx
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import Navbar from './Navbar';
+import Post from './Post';
 
-function SearchResults() {
+export default function SearchResults() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [recipes, setRecipes] = useState([]);
-  // Parse the query parameters (using URLSearchParams)
+  const [selectedPost, setSelectedPost] = useState(null);
+
   const queryParams = new URLSearchParams(location.search);
-  const recipeId = queryParams.get('recipeId'); // if a specific recipe is selected
-  const ingredient = queryParams.get('ingredient'); // ingredient filter
-  const cuisine = queryParams.get('cuisine');       // cuisine filter
+  const recipeId = queryParams.get('recipeId');
+  const ingredient = queryParams.get('ingredient');
+  const cuisine = queryParams.get('cuisine');
 
   useEffect(() => {
-    // Build the API endpoint URL based on query parameters.
-    const url = recipeId 
-      ? `http://localhost:5001/api/recipes/${recipeId}`
-      : `http://localhost:5001/api/recipes/search?` +
+    const url = recipeId
+      ? `${import.meta.env.VITE_API_URL}/recipes/${recipeId}`
+      : `${import.meta.env.VITE_API_URL}/recipes/search?` +
         (ingredient ? `ingredient=${encodeURIComponent(ingredient)}&` : '') +
         (cuisine ? `cuisine=${encodeURIComponent(cuisine)}` : '');
-    
+
     fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        // If fetching a single recipe, wrap it in an array for consistency.
+      .then(res => res.json())
+      .then(data => {
         setRecipes(Array.isArray(data) ? data : [data]);
       })
-      .catch((err) => console.error('Error fetching search results:', err));
+      .catch(err => console.error('Error fetching search results:', err));
   }, [recipeId, ingredient, cuisine]);
 
+  const handleBack = () => {
+    navigate('/dashboard');
+  };
+
   return (
-    <div>
-      <h2>Search Results</h2>
-      {recipes && recipes.length > 0 ? (
-        recipes.map((recipe) => (
-          <div 
-            key={recipe._id} 
-            style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}
-          >
-            <h3>{recipe.title}</h3>
-            <p>{recipe.caption}</p>
-            {recipe.image && (
-              <img 
-                src={recipe.image} 
-                alt={recipe.title} 
-                style={{ width: '200px' }} 
-              />
-            )}
-            <p><strong>Categories:</strong> {recipe.categories.join(', ')}</p>
-            <div>
-              <strong>Steps:</strong>
-              {recipe.steps && recipe.steps.map((step, index) => (
-                <div key={index} style={{ marginTop: '10px' }}>
-                  <p><strong>Step {index + 1}:</strong> {step.description}</p>
-                  {step.ingredients && (
-                    <p><strong>Ingredients:</strong> {step.ingredients.join(', ')}</p>
-                  )}
-                  {step.time && (
-                    <p>
-                      <strong>Time:</strong> {step.time.hours} hours {step.time.minutes} minutes
+    <div className="original-page">
+      <div className="screen">
+        <div className="page">
+          <div className="left-part">
+            <Navbar setPost={() => {}} setProfile={() => {}} setQuick={() => {}} />
+          </div>
+          <div className="middle-part">
+            <button onClick={handleBack} className="back-btn" style={{ marginBottom: '15px' }}>
+              ← Back to Dashboard
+            </button>
+
+            <h2>Search Results</h2>
+
+            {recipes.length > 0 ? (
+              recipes.map(recipe => (
+                <div key={recipe._id}>
+                  <div className="post_container">
+                    <div className="user_profile">
+                      <i className="fa-solid fa-user" />
+                      <div className="user_info">
+                        <h4>{recipe.user?.username || 'Unknown'}</h4>
+                        <h4 id="user_badge">Culinary Creator</h4>
+                      </div>
+                    </div>
+
+                    <img
+                      src={recipe.image || '/default.jpg'}
+                      alt={recipe.title}
+                      className="recipe-image"
+                    />
+
+                    <div className="post-number">
+                      <p><b>{recipe.likeCount || 0} likes</b></p>
+                      <p><b>{recipe.commentCount || 0} comments</b></p>
+                    </div>
+
+                    <p className="post-description">
+                      <b>{recipe.title}</b> {recipe.caption?.slice(0, 100)}...
+                      <button
+                        className="learn-more"
+                        onClick={() =>
+                          setSelectedPost(
+                            selectedPost?._id === recipe._id ? null : recipe
+                          )
+                        }
+                      >
+                        {selectedPost?._id === recipe._id ? 'Go Back' : 'Learn More'}
+                      </button>
                     </p>
+                  </div>
+
+                  {selectedPost?._id === recipe._id && (
+                    <div className="expanded-post">
+                      <Post recipe={selectedPost} />
+                    </div>
                   )}
                 </div>
-              ))}
-            </div>
-            <p>
-              <strong>Likes:</strong> {recipe.likeCount} | <strong>Comments:</strong> {recipe.commentCount}
-            </p>
-            <p><small>Created on: {new Date(recipe.createdAt).toLocaleString()}</small></p>
+              ))
+            ) : (
+              <p>No recipes found.</p>
+            )}
           </div>
-        ))
-      ) : (
-        <p>No recipes found</p>
-      )}
+        </div>
+      </div>
     </div>
   );
 }
-
-export default SearchResults;

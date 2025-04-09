@@ -1,4 +1,3 @@
-// import { useState } from 'react';
 
 function Post() {
     return (
@@ -8,12 +7,12 @@ function Post() {
                 <tr className="post-row">
                     <th className="post-table-heading">Ingredient</th>
                     <th className="post-table-heading">Quantity</th>
-                    <th className="post-table-heading">Substitute</th>
+                    {/* <th className="post-table-heading">Substitute</th> */}
                 </tr>
                 <tr className="post-row">
                     <td className="post-table-data">Chicken</td>
                     <td className="post-table-data">1 kg</td>
-                    <td className="post-table-data">Beef</td>
+                    {/* <td className="post-table-data">Beef</td> */}
                 </tr>
             </table>
             <h3 className="post-cooking-heading">Cooking Process</h3>

@@ -655,6 +655,8 @@
 
 import { useState } from "react";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+
 
 function Create(props) {
   // Initialize steps with an object structure for ingredients and proper time keys
@@ -671,6 +673,9 @@ function Create(props) {
   const [imageFile, setImageFile] = useState(null);
   const [caption, setCaption] = useState("");
   const [categories, setCategories] = useState([]);
+
+  const navigate = useNavigate(); // Get the navigate function
+
 
   const categoryOptions = [
     { value: "Biryani Varieties", label: "Biryani Varieties" },
@@ -717,7 +722,6 @@ function Create(props) {
     ]);
   };
 
-  // Update ingredient "name" property since our schema expects an object
   const updateIngredient = (stepIndex, ingredientIndex, value) => {
     const newSteps = [...steps];
     newSteps[stepIndex].ingredients[ingredientIndex].name = value;
@@ -754,7 +758,6 @@ function Create(props) {
     setSteps(newSteps);
   };
 
-  // Image upload: store both the file for submission and a Base64 preview.
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -768,9 +771,9 @@ function Create(props) {
   };
 
   const handleSubmit = async () => {
+    props.setPost(true);
     const token = localStorage.getItem("token");
 
-    // Create FormData to send multipart/form-data to the backend.
     const formData = new FormData();
     formData.append("title", title);
     formData.append("steps", JSON.stringify(steps));
@@ -786,16 +789,14 @@ function Create(props) {
         method: "POST",
         headers: {
           "x-auth-token": token
-          // Do not set "Content-Type" manually when using FormData
         },
         body: formData,
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log("Recipe submitted:", data);
         alert("Recipe posted!");
-        // Optionally, trigger a navigation or state update
       } else {
         const err = await response.json();
         alert(err.msg || "Failed to post recipe");
