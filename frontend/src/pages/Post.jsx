@@ -1,4 +1,3 @@
-
 function Post() {
     return (
         <div className="post-info">

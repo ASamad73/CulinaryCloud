@@ -1,50 +1,71 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate, Link, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  Outlet,
+  Navigate
+} from "react-router-dom";
 
-// Pages
+// Pages and Components
 import LoginScreen from "./pages/login.jsx";
 import SignupScreen from "./pages/signup.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import Profile from "./Profile.jsx";
-import Search from "./Search.jsx";
-import SearchResults from "./SearchResults.jsx";
+import Navbar from "./pages/Navbar";
+import Search from "./pages/Search";
+import Recipe from "./pages/Recipe";
+import Profile from "./pages/Profile";
+import Create from "./pages/Create";
+import SearchResults from "./pages/SearchResults";
+import QuickRecipes from "./pages/QuickRecipes.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
-import QuickRecipes from "./pages/QuickRecipes.jsx";  
-
+import GuestTimeoutModal from "./components/GuestTimeoutModal";
 
 function App() {
+  // Authentication and guest state
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem("isAuthenticated") === "true"
-  );  
-  const [isGuest, setIsGuest] = useState(localStorage.getItem("isGuest") === "true");
+  );
+  const [isGuest, setIsGuest] = useState(
+    localStorage.getItem("isGuest") === "true"
+  );
   const [showSignup, setShowSignup] = useState(false);
+  const [showGuestModal, setShowGuestModal] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Token handling from URL (e.g., Google OAuth redirect)
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get("token");
 
     if (token) {
-      // Store token and update auth state
       localStorage.setItem("token", token);
       localStorage.setItem("isAuthenticated", "true");
       localStorage.removeItem("isGuest");
       setIsAuthenticated(true);
       setIsGuest(false);
-
-      // Clean up the URL
-      navigate("/dashboard", { replace: true });
+      navigate("/home", { replace: true });
     }
   }, [location, navigate]);
+
+  // Show guest modal after 30 seconds if guest
+  useEffect(() => {
+    if (isGuest) {
+      const timer = setTimeout(() => {
+        setShowGuestModal(true);
+      }, 30000);
+      return () => clearTimeout(timer);
+    }
+  }, [isGuest]);
 
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
     setIsGuest(false);
     localStorage.setItem("isAuthenticated", "true");
     localStorage.removeItem("isGuest");
-    navigate("/dashboard");
+    navigate("/home");
   };
 
   const handleGuestLogin = () => {
@@ -52,7 +73,7 @@ function App() {
     setIsGuest(true);
     localStorage.setItem("isAuthenticated", "false");
     localStorage.setItem("isGuest", "true");
-    navigate("/dashboard");
+    navigate("/home");
   };
 
   const handleLogout = () => {
@@ -69,6 +90,7 @@ function App() {
   return (
     <div className="main-container">
       <Routes>
+        {/* Public routes for login/signup */}
         <Route
           path="/"
           element={
@@ -88,53 +110,54 @@ function App() {
             </div>
           }
         />
-        <Route
-          path="/dashboard"
-          element={
-            <Dashboard
-              isGuest={isGuest}
-              onLogout={handleLogout}
-            />
-          }
-        />
 
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
+        {/* Redirect any legacy /dashboard route to /home */}
+        <Route path="/dashboard" element={<Navigate to="/home" replace />} />
 
+        {/* Protected routes rendered in the dashboard layout */}
         <Route
-          path="/search"
+          path="/home/*"
           element={
             <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <Search />
+              <div className="original-page">
+                <div className="screen">
+                  <div className="page">
+                    <div className="left-part">
+                      <Navbar onLogout={handleLogout} />
+                    </div>
+                    <div className="middle-part">
+                      <Outlet />
+                    </div>
+                  </div>
+                  {showGuestModal && isGuest && (
+                    <GuestTimeoutModal
+                      onLogin={() => (window.location.href = "/")}
+                      onSignup={() => (window.location.href = "/")}
+                    />
+                  )}
+                </div>
+              </div>
             </ProtectedRoute>
           }
-        />
-
-        <Route
-          path="/search-results"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <SearchResults />
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/quick-recipes"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <QuickRecipes />
-            </ProtectedRoute>
-          }
-        />
+        >
+          {/* Default landing view: Search and Recipe */}
+          <Route
+            index
+            element={
+              <>
+                <Search />
+                <Recipe />
+              </>
+            }
+          />
+          {/* Nested routes */}
+          <Route path="profile" element={<Profile />} />
+          <Route path="search" element={<Search />} />
+          <Route path="search-results" element={<SearchResults />} />
+          <Route path="create" element={<Create />} />
+          <Route path="quick-recipes" element={<QuickRecipes />} />
+        </Route>
       </Routes>
-
     </div>
   );
 }

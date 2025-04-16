@@ -251,7 +251,7 @@
 // export default Profile;
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import profile_img from "./assets/profile_img.png";
+import profile_img from "../assets/profile_img.png";
 
 function Profile() {
   const [userData, setUserData] = useState({

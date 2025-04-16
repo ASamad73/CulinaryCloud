@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
-import Navbar from '../Navbar';
-import Post from '../Post';
+import Navbar from './Navbar';
+import Post from './Post';
 
 export default function QuickRecipes({ setPost, setProfile, onLogout }) { // Add onLogout prop
   const [recipes, setRecipes] = useState([]);

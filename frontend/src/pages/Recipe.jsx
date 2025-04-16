@@ -137,7 +137,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Post from './Post';
-import CommentModal from './components/CommentModal';
+import CommentModal from '../components/CommentModal';
 
 function Recipe() {
   const [recipes, setRecipes] = useState([]);
