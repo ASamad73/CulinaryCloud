@@ -41,12 +41,7 @@ export default function SearchResults() {
             <Navbar setPost={() => {}} setProfile={() => {}} setQuick={() => {}} />
           </div>
           <div className="middle-part">
-            <button onClick={handleBack} className="back-btn" style={{ marginBottom: '15px' }}>
-              ← Back to Dashboard
-            </button>
-
             <h2>Search Results</h2>
-
             {recipes.length > 0 ? (
               recipes.map(recipe => (
                 <div key={recipe._id}>

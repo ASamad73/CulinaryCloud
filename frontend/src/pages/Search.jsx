@@ -27,18 +27,20 @@ function Search() {
   }, [searchTerm]);
 
   const handleSuggestionClick = (recipe) => {
-    navigate(`/search-results?recipeId=${recipe._id}`);
+    navigate(`/home/search-results?recipeId=${recipe._id}`);
   };
 
   return (
     <div className="search-container">
-      <input
-        type="text"
-        placeholder="Search by recipe, cuisine, or author"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="search-field"
-      />
+      <div className="search-field-div">
+        <input
+          type="text"
+          placeholder="Search by recipe, cuisine, or author"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-field"
+        />
+      </div>
       {suggestions.length > 0 && (
         <ul className="suggestions-list" style={{ listStyleType: 'none', padding: 0 }}>
           {suggestions.map((recipe) => (

@@ -45,6 +45,7 @@ const StepSchema = new mongoose.Schema({
     hours: Number,
     minutes: Number
   }
+  
 });
 
 const RecipeSchema = new mongoose.Schema({
@@ -57,6 +58,14 @@ const RecipeSchema = new mongoose.Schema({
 
   likeCount: { type: Number, default: 0 },
   commentCount: { type: Number, default: 0 },
+  
+  //Added by samad
+  ratings: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      value: { type: Number, required: true }
+    }
+  ],
 
   categories: {
     type: [String],
