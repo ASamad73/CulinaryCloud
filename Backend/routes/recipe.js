@@ -2,6 +2,7 @@ const express = require('express');
 const Recipe = require('../models/Recipe');
 const Like = require('../models/Like');
 const Comment = require('../models/Comment');
+const uploadVideo = require('../utils/videoUpload');
 const authMiddleware = require('../middleware/auth');
 const guestMiddleware = require('../middleware/guest');
 const multer = require('multer');
@@ -40,7 +41,8 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
             image: imageUrl,
             caption: req.body.caption,
             user: req.user.id,
-            categories: req.body.categories ? JSON.parse(req.body.categories) : []
+            categories: req.body.categories ? JSON.parse(req.body.categories) : [],
+            videoUrls: JSON.parse(req.body.videoUrls || '[]')
         });
 
         const savedRecipe = await newRecipe.save();
@@ -376,5 +378,18 @@ router.post('/:id/rate', authMiddleware, async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
+// ---------------------- VIDEO UPLOAD ENDPOINT ----------------------
+router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async (req, res) => {
+    try {
+      const videoUrl = req.file.path;
+      res.status(200).json({ videoUrl });
+    } catch (err) {
+      console.error("Video upload failed:", err);
+      res.status(500).json({ message: "Video upload failed", error: err });
+    }
+  });
+  
+  //-----------------------------------------------------------------------------------
 
 module.exports = router;

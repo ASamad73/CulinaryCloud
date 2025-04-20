@@ -77,6 +77,10 @@ const RecipeSchema = new mongoose.Schema({
       },
       message: '{PATH} exceeds the limit of 3'
     }
+  },
+  videoUrls:{
+    type: [String],
+    default: []
   }
 });
 

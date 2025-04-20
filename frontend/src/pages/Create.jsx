@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import axios from "axios";
 
 
 function Create(props) {
@@ -20,6 +21,7 @@ function Create(props) {
   const [imageFile, setImageFile] = useState(null);
   const [caption, setCaption] = useState("");
   const [categories, setCategories] = useState([]);
+  const [videoUrls, setVideoUrls] = useState([]);
 
   // const navigate = useNavigate(); // Get the navigate function
   const categoryOptions = [
@@ -116,6 +118,36 @@ function Create(props) {
     }
   };
 
+  //-------------------------------------------
+  // ✅ New: handle video upload
+  const handleVideoUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("video", file);
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/recipes/upload-video`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "x-auth-token": localStorage.getItem("token"),
+          },
+        }
+      );
+
+      setVideoUrls((prev) => [...prev, res.data.videoUrl]);
+      alert("Video uploaded successfully!");
+    } catch (err) {
+      console.error("Video upload failed:", err);
+      alert("Video upload failed.");
+    }
+  };
+  //-------------------------------------------
+
   const handleSubmit = async () => {
     // props.setPost(true);
     const token = localStorage.getItem("token");
@@ -126,6 +158,7 @@ function Create(props) {
     formData.append("steps", JSON.stringify(steps));
     formData.append("caption", caption);
     formData.append("categories", JSON.stringify(categories));
+    formData.append("videoUrls", JSON.stringify(videoUrls));
 
     if (imageFile) {
       formData.append("image", imageFile);
@@ -342,6 +375,19 @@ function Create(props) {
           }),
         }}
       />
+      {/* ✅ Video Upload Field */}
+      <div style={{ marginTop: "20px" }}>
+        <label>Upload Step-by-Step Video:</label>
+        <input type="file" accept="video/*" onChange={handleVideoUpload} />
+      </div>
+
+      {/* ✅ Video Preview */}
+      {videoUrls.map((url, index) => (
+        <video key={index} controls width="100%" style={{ marginTop: "10px" }}>
+          <source src={url} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      ))}
       <button className="submit-part" onClick={handleSubmit}>
         Submit
       </button>
