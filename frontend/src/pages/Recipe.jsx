@@ -152,7 +152,7 @@ function Recipe() {
               )}
               <div className="user_info">
                 <h4 id="user_name">{recipe.user?.name || "Unknown"}</h4>
-                <h4 id="user_badge">Culinary Creator</h4>
+                <h4 id="user_badge">{recipe.user?.rank || "Prep Cook"}</h4>
               </div>
             </div>
             <img

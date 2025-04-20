@@ -171,6 +171,10 @@
   font-weight: 500;
 }
 
+.suggestions-list{
+  margin-top: 10vh;
+}
+
 .post-number{
   display: flex;
   justify-content: space-between;

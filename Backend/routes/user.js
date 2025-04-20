@@ -32,11 +32,11 @@ router.get('/profile-picture/:userId', authMiddleware, async (req, res) => {
 
 router.get('/me', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('_id profilePicture bio email');
+    const user = await User.findById(req.user.id).select('_id profilePicture bio email rank');
     if (!user) {
       return res.status(404).json({ msg: 'User not found' });
     }
-    res.json({ id: user._id, profilePicture: user.profilePicture , bio:user.bio, email:user.email});
+    res.json({ id: user._id, profilePicture: user.profilePicture , bio:user.bio, email:user.email, rank:user.rank});
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ msg: 'Server error' });

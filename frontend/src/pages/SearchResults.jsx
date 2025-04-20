@@ -47,10 +47,18 @@ export default function SearchResults() {
                 <div key={recipe._id}>
                   <div className="post_container">
                     <div className="user_profile">
-                      <i className="fa-solid fa-user" />
+                    {recipe.user?.profilePicture ? (
+                        <img
+                          src={recipe.user.profilePicture}
+                          alt={recipe.user.name || "Profile"}
+                          className="profile-pic"
+                        />
+                      ) : (
+                        <i className="fa-solid fa-user" />
+                      )}
                       <div className="user_info">
-                        <h4>{recipe.user?.username || 'Unknown'}</h4>
-                        <h4 id="user_badge">Culinary Creator</h4>
+                        <h4>{recipe.user?.name || 'Unknown'}</h4>
+                        <h4 id="user_badge">{recipe.user?.rank || "Prep Cook"}</h4>
                       </div>
                     </div>
 

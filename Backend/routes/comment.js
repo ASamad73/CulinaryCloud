@@ -3,6 +3,10 @@ const Comment = require('../models/Comment');
 const Recipe = require('../models/Recipe');
 const authMiddleware = require('../middleware/auth');
 
+// 🔧 Add this import for gamification
+const { calculateUserScore, determineUserRank, updateUserRankAndScore } = require('../models/Gamification');
+
+
 const router = express.Router();
 
 // POST a comment on a recipe
@@ -19,6 +23,18 @@ router.post('/:recipeId', authMiddleware, async (req, res) => {
 
     await newComment.save();
     await Recipe.findByIdAndUpdate(recipeId, { $inc: { commentCount: 1 } });
+
+    try {
+      const recipe = await Recipe.findById(recipeId);
+      const recipeOwnerId = recipe.user;
+      const newScore = await calculateUserScore(recipeOwnerId);
+      const newRank = determineUserRank(newScore);
+      console.log("📢 Called updateUserRankAndScore()");
+      await updateUserRankAndScore(recipeOwnerId, newScore, newRank);
+      console.log(`User ${recipeOwnerId} score updated after comment.`);
+    } catch (error) {
+      console.error('Gamification error (comment):', error);
+    }
 
     res.status(201).json(newComment);
   } catch (err) {

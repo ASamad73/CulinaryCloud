@@ -48,6 +48,7 @@ function determineUserRank(score) {
 async function updateUserRankAndScore(userId, score, rank) {
     try {
         await User.findByIdAndUpdate(userId, { score: score, rank: rank });
+        console.log(`✅ [Gamification] Updated → User: ${userId} | Score: ${score} | Rank: ${rank}`);
     } catch (error) {
         console.error('Error updating user rank and score:', error);
     }
