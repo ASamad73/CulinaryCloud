@@ -39,6 +39,9 @@
 
 .screen {
   margin-bottom: 1.2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .page {
@@ -64,6 +67,7 @@
   display: flex;
   flex-direction: column;
   margin-left: 19vw;
+  overflow-y: auto;
   /* padding-top: 8vh; */
 }
 
@@ -72,8 +76,34 @@
   position: fixed;
   right: 0.5rem;
   width: 21vw;
+  /* overflow: hidden; */
   /* margin-left: 20vw; */
   top: 2.5rem;
+}
+
+.middle-part-quick{
+  width: 50vw;
+  height: auto;
+}
+
+.quick-recipes-title{
+  text-align: center;
+  margin-top: 0.9vh;
+  font-size: 2rem;
+  font-weight: bold;
+  /* color: #FFE5B4; */
+  color: #5D4037;
+}
+
+.middle-part-search{
+  width: 50vw;
+  height: auto;
+}
+
+.search-section-heading{
+  margin-top: 1vh;
+  font-size: 1.5rem;
+  color: #5D4037;
 }
 
 .post_container {
@@ -239,7 +269,6 @@
   font-size: 25px;
   color: #2E7D32;
   font-weight: 700;
-  margin-left: 17%;
 }
 
 .add-step{
@@ -480,7 +509,6 @@ input[type="file"]::-webkit-file-upload-button {
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
 }
 
-
 /* navbar */
 
 .navbar{
@@ -625,9 +653,12 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 .edit-profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-width: 7vw; 
   min-height: 3vw; 
-  padding: 0.5em 1em; 
+  padding: 0.5em 1em 0.7em 1em; 
   border-radius: 12px;
   background-color: #FFE5B4;
   font-size: 0.9rem; 
@@ -836,8 +867,8 @@ input[type="file"]::-webkit-file-upload-button {
 
 
 .profile-post-delete{
-  min-height: 3vh;
-  min-width: 5vw;
+  min-height: 4vh;
+  min-width: 3vw;
   outline: none;
   border: none;
   border-radius: 4px;
@@ -851,19 +882,13 @@ input[type="file"]::-webkit-file-upload-button {
   text-overflow: ellipsis;  
   /* background-color: rgb(245, 70, 70); */
   background-color: #E57373;
-
 }
 
-
-
-
-
-
-
-
-
-
-
+.profile-post-delete:hover {
+  background-color: rgb(200, 50, 50);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
 
 
 /* -------------------- Added by Saadi ---------------------- */
@@ -872,7 +897,6 @@ input[type="file"]::-webkit-file-upload-button {
 /* Base Styles and Layout */
 .cooking-mode-container {
   width: 51vw;
-  margin: 0 auto;
   padding: 2rem;
   font-family: 'Poppins', sans-serif;
   background:  #FAF3E0 ;
@@ -1360,7 +1384,7 @@ input[type="file"]::-webkit-file-upload-button {
   display: flex;
   flex-direction: column;
   border-radius: 6px;
-  height: 91vh;
+  height: calc(100vh - 2.5rem); /* Match right-part height minus top offset */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -1368,8 +1392,8 @@ input[type="file"]::-webkit-file-upload-button {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   position: relative;
+  min-height: 0; /* Allow flex shrinkage */
 }
 
 .chats {
@@ -1378,8 +1402,9 @@ input[type="file"]::-webkit-file-upload-button {
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
-  overflow-y: auto;
+  overflow-y: auto; /* Only chats scrolls */
   justify-content: flex-end;
+  min-height: 0; /* Prevent flex shrinkage */
 }
 
 .user-chat,
@@ -1415,6 +1440,7 @@ input[type="file"]::-webkit-file-upload-button {
   padding: 0.5rem;
   background: white;
   border-radius: 0 0 6px 6px;
+  height: 3rem; /* Explicit height */
 }
 
 .bot-input input {

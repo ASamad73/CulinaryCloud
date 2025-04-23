@@ -194,7 +194,7 @@ function Profile() {
                 />
                 <div className="recipe-details">
                   <p className="profile-post-title"><b>{recipe.title}</b></p>
-                  <button className="profile-post-delete" onClick={() => handleDelete(recipe._id)}>Delete</button>
+                  <button className="profile-post-delete" onClick={() => handleDelete(recipe._id)}><i className="fa-solid fa-trash"></i></button>{/*changed by samad*/}
                 </div>
               </div>
             ))

@@ -60,12 +60,14 @@ const authRoutes = require('./routes/auth');
 const recipeRoutes = require('./routes/recipe');
 const commentRoutes = require('./routes/comment');
 const userRoutes = require('./routes/user');
+const chatRoutes = require('./routes/chat')
 
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/chat', chatRoutes); //added by samad
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
