@@ -63,8 +63,17 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 20vw;
+  margin-left: 19vw;
   /* padding-top: 8vh; */
+}
+
+.right-part{
+  height: 100vh;
+  position: fixed;
+  right: 0.5rem;
+  width: 21vw;
+  /* margin-left: 20vw; */
+  top: 2.5rem;
 }
 
 .post_container {
@@ -143,7 +152,7 @@
 .search-field-div {
   position: fixed;
   top: 0rem;      
-  left: 20vw;        
+  left: 19vw;        
   width: 55vw;
   height: 13vh;
   background-color: #FAF3E0; 
@@ -155,7 +164,8 @@
 
 .search-field{
   height: 8vh;
-  width: 53vw;
+  width: 51vw;
+  margin-right: 2vw;
   border-radius: 25px;
   border: none;
   background-color: #FFE5B4;
@@ -282,7 +292,7 @@
 
 .input-unit-field{
   width: 6vw;
-  color: #757575;
+  /* color: #757575; */
 }
 
 .input-description-field{
@@ -427,8 +437,22 @@
   margin-top: 3rem;
 }
 
+.video-container{
+  margin-top: 3vh;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  padding: 0.5rem 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
 .submit-part {
-  margin-top: 4rem;
+  margin-top: 5rem;
   height: 7vh;
   width: 8vw;
   color: white;
@@ -442,6 +466,7 @@
   transition: all 0.2s ease;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   backdrop-filter: blur(0px);
+  overflow: hidden;
 }
 
 .submit-part:hover {
@@ -454,6 +479,7 @@
   transform: scale(0.96);
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
 }
+
 
 /* navbar */
 
@@ -631,19 +657,35 @@
   font-size: 1.4rem;
 }
 
-.user-posts{
+/* .user-posts{
   margin-top: 5%;
   display: flex;
   align-items: center;
-  gap: 2vw;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5vw;
+} */
+.user-posts {
+  margin-top: 3vh;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1vw;
+  justify-content: space-between;
 }
 
-.user-recipe-posts{
-  height: 40vh;
-  width: 24vw;
-  border-radius: 3px;
+.user-recipe-post {
+  flex: 0 1 calc(50% - 10px);
+  box-sizing: border-box;
   cursor: pointer;
 }
+
+/* .user-recipe-posts{
+  height: 40vh;
+  width: calc(30%-10px);
+  box-sizing: border-box;
+  border-radius: 3px;
+  cursor: pointer;
+} */
 
 /* For the file input button */
 .file-input-label {
@@ -829,9 +871,9 @@
 
 /* Base Styles and Layout */
 .cooking-mode-container {
-  max-width: 900px;
+  width: 51vw;
   margin: 0 auto;
-  padding: 30px;
+  padding: 2rem;
   font-family: 'Poppins', sans-serif;
   background:  #FAF3E0 ;
   min-height: 100vh;
@@ -856,8 +898,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  margin-bottom: 40px;
+  gap: 1rem;
+  margin-bottom: 8vh;
   position: relative;
   z-index: 1;
 }
@@ -865,12 +907,13 @@
 .back-button, .restart-button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
+  gap: 0.5rem;
+  padding: 1rem 0.9rem;
+  /* padding: 1rem 2rem; */
   background-color: #FAF3E0;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #333;
   cursor: pointer;
@@ -886,8 +929,11 @@
 .recipe-title-container {
   display: flex;
   align-items: center;
-  gap: 15px;
+  justify-content: center;
   background-color: #FAF3E0;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
 }
 
 .recipe-icon {
@@ -898,8 +944,8 @@
 }
 
 .recipe-title {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: bold;
   color: #2e7d32;
   margin: 0;
 }
@@ -1105,6 +1151,19 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
+/* ------samad---------- */
+.timer-button.reset {
+  background-color: #ff9800;
+  color: white;
+}
+
+.timer-button.reset:hover {
+  background-color: #fb8c00;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+/* ------------------------------------- */
+
 /* Progress Section */
 .progress-section {
   margin-bottom: 40px;
@@ -1295,3 +1354,88 @@
     font-size: 18px;
   }
 }
+
+/* -------samad---------------- */
+.bot-container {
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  height: 91vh;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.chats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  overflow-y: auto;
+  justify-content: flex-end;
+}
+
+.user-chat,
+.bot-chat {
+  max-width: 80%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+}
+
+.user-chat {
+  align-self: flex-start;
+  background: #fcd34d;
+  color: #166534;
+}
+
+.bot-chat {
+  align-self: flex-end;
+  background: #166534;
+  color: white;
+}
+
+.bot-name {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #4caf50;
+  font-weight: bold;
+  margin-bottom: 12rem;
+}
+
+.bot-input {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 0 0 6px 6px;
+}
+
+.bot-input input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #fcd34d;
+  border-radius: 4px;
+}
+
+.bot-input .bot-arrow {
+  margin-left: 0.5rem;
+  background: #fcd34d;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.bot-input .bot-arrow i {
+  color: #166534;
+}
+
+
+/* ---------------------------------- */

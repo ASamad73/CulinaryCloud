@@ -376,9 +376,9 @@ function Create(props) {
         }}
       />
       {/* ✅ Video Upload Field */}
-      <div style={{ marginTop: "20px" }}>
-        <label>Upload Step-by-Step Video:</label>
-        <input type="file" accept="video/*" onChange={handleVideoUpload} />
+      <div className="video-container">
+        <h5 className="step-titles">Upload a Video</h5>
+        <input type="file" accept="video/*" onChange={handleVideoUpload} className="choose-video"/>
       </div>
 
       {/* ✅ Video Preview */}

@@ -185,6 +185,7 @@ import Profile from "./pages/Profile";
 import Create from "./pages/Create";
 import SearchResults from "./pages/SearchResults";
 import QuickRecipes from "./pages/QuickRecipes.jsx";
+import ChatBot from "./pages/ChatBot.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestTimeoutModal from "./components/GuestTimeoutModal";
 import StartCooking from "./pages/startCooking"; // Added import for StartCooking
@@ -295,6 +296,9 @@ function App() {
                     </div>
                     <div className="middle-part">
                       <Outlet />
+                    </div>
+                    <div className="right-part">
+                      <ChatBot/>
                     </div>
                   </div>
                   {showGuestModal && isGuest && (

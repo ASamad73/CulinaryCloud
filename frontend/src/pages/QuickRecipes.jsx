@@ -103,9 +103,7 @@ export default function QuickRecipes({ setPost, setProfile, onLogout }) { // Add
               onLogout={onLogout} 
             />
           </div>
-          <div className="middle-part">
-            <h2 style={{ marginBottom: '20px' }}>Quick Recipes (Under 30 Minutes)</h2>
-
+          <div className="middle-part-quick">
             {recipes.map((recipe) => (
               <div key={recipe._id}>
                 <div className="post_container">

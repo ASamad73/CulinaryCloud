@@ -45,6 +45,7 @@ function Post({ recipe }) {
           <tr className="post-row">
             <th className="post-table-heading">Ingredient</th>
             <th className="post-table-heading">Quantity</th>
+            <th className="post-table-heading">Unit</th>
           </tr>
         </thead>
         <tbody>
@@ -53,6 +54,7 @@ function Post({ recipe }) {
               <tr key={`${stepIndex}-${i}`} className="post-row">
                 <td className="post-table-data">{ing.name}</td>
                 <td className="post-table-data">{ing.quantity}</td>
+                <td className="post-table-data">{ing.unit}</td>
               </tr>
             ))
           )}
