@@ -26,11 +26,14 @@ function Profile() {
             headers: { "x-auth-token": token }
           }
         );
+        const fullName = 
         setUserData(prev => ({
           ...prev,
           id: response.data.id,
           profilePicture: response.data.profilePicture || profile_img,
-          username: response.data.email || "Username to be Displayed here",
+          username: (
+            `${response.data.fname || ""} ${response.data.lname || ""}`
+          ).trim() || "Username to be Displayed here",
           bio: response.data.bio || "No bio yet."
         }));
       } catch (error) {

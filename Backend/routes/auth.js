@@ -126,7 +126,7 @@ router.get(
   (req, res) => {
     // At this point passportConfig has created/found the User and set req.user
     const payload = { user: { id: req.user._id } };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
     // Redirect back to your React app with the JWT
     res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${token}`);
   }
@@ -199,7 +199,7 @@ router.get(
 
 /* --- Local Registration Route --- */
 router.post("/register", upload.single("profilePicture"), async (req, res) => {
-  const { email, password, bio, name } = req.body;
+  const { firstName,lastName, email, password, bio, name } = req.body;
 
   let dietaryPreferences = [];
   try {
@@ -209,11 +209,15 @@ router.post("/register", upload.single("profilePicture"), async (req, res) => {
   } catch {
     return res.status(400).json({ msg: "Invalid dietary preferences format" });
   }
+  // Basic validation
+  if (!email || !password || !firstName || !lastName) {
+    return res.status(400).json({ msg: "Missing required fields" });
+  }
 
   try {
     let user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ msg: "User already exists" });
+      return res.status(400).json({ msg: "Email already in use" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -227,6 +231,8 @@ router.post("/register", upload.single("profilePicture"), async (req, res) => {
 
     user = new User({
       email,
+      name:firstName,
+      lname:lastName,
       auth: {
         local: { password: hashedPassword },
       },
@@ -238,7 +244,7 @@ router.post("/register", upload.single("profilePicture"), async (req, res) => {
     await user.save();
 
     const payload = { user: { id: user._id } };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
 
     res.status(201).json({ msg: "User registered successfully", token });
   } catch (err) {

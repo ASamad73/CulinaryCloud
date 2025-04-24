@@ -38,6 +38,7 @@ const StepSchema = new mongoose.Schema({
     {
       name: String, 
       quantity: String, 
+      unit: String
     }
   ],
   description: String,
@@ -46,6 +47,17 @@ const StepSchema = new mongoose.Schema({
     minutes: Number
   }
   
+});
+
+
+// in models/recipe.js
+
+const NutritionSchema = new mongoose.Schema({
+  calories:   Number,
+  protein:    Number,
+  fat:        Number,
+  carbs:      Number,
+  analyzedAt: Date,
 });
 
 const RecipeSchema = new mongoose.Schema({
@@ -81,6 +93,10 @@ const RecipeSchema = new mongoose.Schema({
   videoUrls:{
     type: [String],
     default: []
+  },
+  nutrition:{
+    type: NutritionSchema,
+    default: null    // ← made it optional as there are existing recipes that do not have this
   }
 });
 

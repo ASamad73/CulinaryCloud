@@ -538,17 +538,16 @@ input[type="file"]::-webkit-file-upload-button {
   position: absolute;
   inset: 0;
   /* background-color: rgba(255, 229, 180, 0.4);  */
-  background-color: rgba(93, 64, 55, 0.1);
+  background-color: rgba(78, 211, 85, 0.8);
   border-radius: 6px;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity .2s ease;
   z-index: -1; /* Keeps the effect behind the text/icons */
 }
 
 .sites:hover::before {
   opacity: 1;
 }
-
 /* post */
 
 .post-info {

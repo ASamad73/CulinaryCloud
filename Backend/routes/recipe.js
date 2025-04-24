@@ -10,7 +10,7 @@ const guestMiddleware = require('../middleware/guest');
 const multer = require('multer');
 const cloudinary = require('../utils/cloudinary');
 const { calculateUserScore, determineUserRank, updateUserRankAndScore } = require('../models/Gamification'); // Import the gamification functions
-
+const axios      = require("axios");   
 const router = express.Router();
 
 const storage = multer.memoryStorage();
@@ -18,6 +18,105 @@ const upload = multer({
     storage,
     limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
+
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+
+// Utility to clean Markdown fences from a string
+function stripMarkdownJSON(text) {
+    // Remove ```json or ``` markers
+    return text
+      .trim()
+      // Remove ```json\n and ```\n
+      .replace(/```json\s*/, "")
+      .replace(/```/, "")
+      // Also remove any leading/trailing backticks
+      .replace(/^[`]+|[`]+$/g, "")
+      .trim();
+  }
+  
+
+// Replace normalizeWithLLM with this Gemini version:
+async function normalizeWithGemini(raws) {
+    const prompt = `
+  You are a cooking assistant. Normalize this list of user-entered ingredients into the form
+"quantity unit name".  Correct typos, translate non-English words to English, and use
+**standard short-form unit abbreviations** (e.g. g, kg, ml, l, tsp, tbsp, cup).  Then return
+the result as a JSON array.  Input:
+  ${JSON.stringify(raws, null, 2)}
+  `;
+  
+    const res = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/` +
+      `gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: prompt }]
+          }
+        ],
+      }
+    );
+  
+    // Grab the text reply
+    let reply =
+      res.data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (!reply) throw new Error("No normalization reply from Gemini");
+    
+    reply = stripMarkdownJSON(reply);
+
+    // Attempt to parse it as JSON
+    try {
+      return JSON.parse(reply);
+    } catch (e) {
+      throw new Error("Failed to parse Gemini reply as JSON:\n" + reply);
+    }
+  }
+
+async function fetchNutrition(steps) {
+    // Flatten steps → ["2 cups rice", "1 tbsp oil", …]
+    const rawIngredients = steps.flatMap(step =>
+        step.ingredients.map(i => {
+          // Put the raw fields into an array
+          const parts = [i.quantity, i.unit, i.name];
+          // Remove any falsy entries (undefined, empty strings)
+          const cleaned = parts.filter(Boolean);
+          // Join them into "qty unit name"
+          return cleaned.join(" ");
+        })
+      );    
+
+    console.log("📤 Raw to Gemini:", rawIngredients);
+    const ingr = await normalizeWithGemini(rawIngredients);
+    console.log("✅ Gemini normalized:", ingr);
+
+
+    console.log("Sending to Edamam:", { ingr });
+    const url = [
+      "https://api.edamam.com/api/nutrition-details",
+      `?app_id=${process.env.EDAMAM_APP_ID}`,
+      `&app_key=${process.env.EDAMAM_APP_KEY}`
+    ].join("");
+  
+    const { data } = await axios.post(url, { ingr });
+
+    console.log("Edamam response:", {
+        calories: data.calories,
+        procnt:   data.totalNutrients?.PROCNT,
+        fat:      data.totalNutrients?.FAT,
+        chocdf:   data.totalNutrients?.CHOCDF,
+      });
+
+    return {
+      calories:   data.calories,
+      protein:    +(data.totalNutrients?.PROCNT?.quantity || 0).toFixed(1),
+      fat:        +(data.totalNutrients?.FAT?.quantity    || 0).toFixed(1),
+      carbs:      +(data.totalNutrients?.CHOCDF?.quantity || 0).toFixed(1),
+      analyzedAt: new Date(),
+    };
+  }
+// ************************************************************************************************************AJ
 
 // POST /recipes - Create a new recipe
 router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
@@ -50,19 +149,40 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
         const savedRecipe = await newRecipe.save();
         res.json(savedRecipe);
 
-        try {
-          const userId = req.user.id;
-          const newScore = await calculateUserScore(userId);
-          const newRank = determineUserRank(newScore);
-          await updateUserRankAndScore(userId, newScore, newRank);
-          console.log(`User ${userId} score updated after recipe creation.`);
-        } catch (error) {
-            console.error('Gamification error (create recipe):', error);
+        // ************************************************************************************************************AJ
+        (async () => {
+            try {
+              const userId   = req.user.id;
+              const newScore = await calculateUserScore(userId);
+              const newRank  = determineUserRank(newScore);
+              await updateUserRankAndScore(userId, newScore, newRank);
+            } catch (error) {
+              console.error("Gamification error:", error);
+            }
+          })();
+    
+          // 5) Fire off nutrition analysis (also fire-and-forget)
+          (async () => {
+            try {
+              const nutrition = await fetchNutrition(savedRecipe.steps);
+
+              const updated =  await Recipe.findByIdAndUpdate(savedRecipe._id, { nutrition },{new:true});
+              console.log(
+                `Nutrition successfully updated for recipe ${savedRecipe._id}:`,
+                updated.nutrition);
+
+            } catch (err) {
+              console.error(
+                `Nutrition update failed for recipe ${savedRecipe._id}:`,
+                err.response?.data || err.message
+              );
+            }
+          })();
+    
+        } catch (err) {
+          console.error("Error creating recipe:", err);
+          res.status(500).send("Server error");
         }
-    } catch (err) {
-        console.error('Error creating recipe:', err);
-        res.status(500).send('Server error');
-    }
 });
 
 router.get("/quick", guestMiddleware, async (req, res) => {

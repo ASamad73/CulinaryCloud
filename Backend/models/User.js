@@ -39,6 +39,9 @@ const UserSchema = new mongoose.Schema({
   name: { 
     type: String 
   },
+  lname:{
+    type: String
+  },
   auth: {
     type: AuthSchema,
     default: {}
