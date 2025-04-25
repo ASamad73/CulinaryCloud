@@ -24,7 +24,6 @@ export default function Layout({ isGuest, onLogout }) {
             <Navbar onLogout={onLogout} />
           </div>
           <div className="middle-part">
-            {/* Child routes will be rendered here */}
             <Outlet />
           </div>
         </div>
@@ -38,3 +37,4 @@ export default function Layout({ isGuest, onLogout }) {
     </div>
   );
 }
+ 
