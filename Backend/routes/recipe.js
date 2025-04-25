@@ -1,5 +1,4 @@
-// import dotenv from "dotenv";
-// const dotenv = require('dotenv');
+
 const express = require('express');
 const Recipe = require('../models/Recipe');
 const Like = require('../models/Like');
@@ -30,15 +29,11 @@ const upload = multer({
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-// Utility to clean Markdown fences from a string
 function stripMarkdownJSON(text) {
-    // Remove ```json or ``` markers
     return text
       .trim()
-      // Remove ```json\n and ```\n
       .replace(/```json\s*/, "")
       .replace(/```/, "")
-      // Also remove any leading/trailing backticks
       .replace(/^[`]+|[`]+$/g, "")
       .trim();
   }
@@ -89,21 +84,17 @@ the result as a JSON array.
   }
 
 async function fetchNutrition(steps) {
-    // Flatten steps → ["2 cups rice", "1 tbsp oil", …]
     const rawIngredients = steps.flatMap(step =>
         step.ingredients.map(i => {
-          // Put the raw fields into an array
           const parts = [i.quantity, i.unit, i.name];
-          // Remove any falsy entries (undefined, empty strings)
           const cleaned = parts.filter(Boolean);
-          // Join them into "qty unit name"
           return cleaned.join(" ");
         })
       );    
 
-    console.log("📤 Raw to Gemini:", rawIngredients);
+    console.log("Raw to Gemini:", rawIngredients);
     const ingr = await normalizeWithGemini(rawIngredients);
-    console.log("✅ Gemini normalized:", ingr);
+    console.log("Gemini normalized:", ingr);
 
 
     console.log("Sending to Edamam:", { ingr });
@@ -236,7 +227,7 @@ router.get("/quick", guestMiddleware, async (req, res) => {
                         _id: 1,
                         name: 1,
                         profilePicture: 1,
-                        rank: 1 // ✅ Add rank here!
+                        rank: 1 // dd rank here!
                       }
                     }
                   ],
@@ -412,7 +403,7 @@ router.get('/trending', guestMiddleware, async (req, res) => {
                 return {
                     ...recipe._doc,
                     engagementScore,
-                    averageRating  // ✅ Add this line!
+                    averageRating  // Add this line!
                 };
             })
         );
@@ -552,7 +543,6 @@ router.post('/:id/rate', authMiddleware, async (req, res) => {
     }
 });
 
-// ---------------------- VIDEO UPLOAD ENDPOINT ----------------------
 router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async (req, res) => {
     try {
       const videoUrl = req.file.path;
@@ -563,6 +553,5 @@ router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async 
     }
   });
   
-  //-----------------------------------------------------------------------------------
 
 module.exports = router;

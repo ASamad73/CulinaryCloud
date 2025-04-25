@@ -1450,7 +1450,7 @@ input[type="file"]::-webkit-file-upload-button {
   position: relative;
   min-height: 0; /* Allow flex shrinkage */
 }
-
+    
 .chats {
   flex: 1;
   display: flex;

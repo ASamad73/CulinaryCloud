@@ -50,8 +50,6 @@ const StepSchema = new mongoose.Schema({
 });
 
 
-// in models/recipe.js
-
 const NutritionSchema = new mongoose.Schema({
   calories:   Number,
   protein:    Number,
@@ -100,7 +98,6 @@ const RecipeSchema = new mongoose.Schema({
   }
 });
 
-// after your schema definition, before module.exports
 RecipeSchema.index({
   title:             'text',
   categories:        'text',
