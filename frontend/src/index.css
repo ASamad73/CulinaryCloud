@@ -1402,7 +1402,8 @@ input[type="file"]::-webkit-file-upload-button {
   gap: 0.75rem;
   padding: 1rem;
   overflow-y: auto; /* Only chats scrolls */
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
+  overscroll-behavior: contain;
   min-height: 0; /* Prevent flex shrinkage */
 }
 
@@ -1464,3 +1465,44 @@ input[type="file"]::-webkit-file-upload-button {
 
 
 /* ---------------------------------- */
+/* new in your CSS */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #166534;
+  color: white;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+.close-chat-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.open-chat-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  /* Remove hard width/height and let padding size it */
+  padding: 0.75rem 1rem;   
+  border-radius: 1.5rem;   /* pill‐shape instead of perfect circle */
+  background-color: #459c2b;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;         /* slightly smaller text */
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.2s ease;
+}
+
+.open-chat-btn:hover {
+  background-color: #2e7d32;
+}

@@ -185,7 +185,7 @@ import Profile from "./pages/Profile";
 import Create from "./pages/Create";
 import SearchResults from "./pages/SearchResults";
 import QuickRecipes from "./pages/QuickRecipes.jsx";
-import ChatBot from "./pages/ChatBot.jsx";
+import ChatBot from "./pages/Chatbot.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestTimeoutModal from "./components/GuestTimeoutModal";
 import StartCooking from "./pages/startCooking"; // Added import for StartCooking
@@ -200,6 +200,7 @@ function App() {
   );
   const [showSignup, setShowSignup] = useState(false);
   const [showGuestModal, setShowGuestModal] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -245,12 +246,22 @@ function App() {
     navigate("/home");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/chat/history`, {
+        method: 'DELETE',
+        headers: { 'x-auth-token': localStorage.getItem('token') || '' }
+      });
+    } catch (err) {
+      console.error("Failed to clear chat history on logout:", err);
+    }
+  
+    // now clear client state
     setIsAuthenticated(false);
     setIsGuest(false);
     localStorage.clear();
     navigate("/");
-  };
+  };  
 
   const toggleAuthScreen = () => {
     setShowSignup(!showSignup);
@@ -298,8 +309,20 @@ function App() {
                       <Outlet />
                     </div>
                     <div className="right-part">
-                      <ChatBot/>
-                    </div>
+                    {!chatOpen ? (
+                      <button
+                        className="open-chat-btn"
+                        onClick={() => setChatOpen(true)}
+                      >
+                        Talk with our AI expert
+                      </button>
+                    ) : (
+                      <ChatBot onClose={() => setChatOpen(false)}
+                        // session={chatSession}
+                        // setSession={setChatSession}
+                         />
+                    )}
+                  </div>
                   </div>
                   {showGuestModal && isGuest && (
                     <GuestTimeoutModal

@@ -100,4 +100,20 @@ const RecipeSchema = new mongoose.Schema({
   }
 });
 
+// after your schema definition, before module.exports
+RecipeSchema.index({
+  title:             'text',
+  categories:        'text',
+  'steps.ingredients.name': 'text'
+},
+{
+  weights: {
+    title: 10,
+    categories: 5,
+    'steps.ingredients.name': 3
+  }
+}
+);
+
+
 module.exports = mongoose.model('Recipe', RecipeSchema);
