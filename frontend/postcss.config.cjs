@@ -3,4 +3,4 @@ module.exports = {
       tailwindcss: {},
       autoprefixer: {}, // Optional but recommended for browser compatibility
     },
-  };
+  };    

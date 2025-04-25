@@ -6,4 +6,4 @@ export default function ProtectedRoute({ children, isAuthenticated, isGuest }) {
     return <Navigate to="/" replace />;
   }
   return children;
-}
+} 

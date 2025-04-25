@@ -17,7 +17,6 @@ function Profile() {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [newBio, setNewBio] = useState("");
   
-  // Fetch user profile data
   useEffect(() => {
     const fetchUserData = async () => {
       try {

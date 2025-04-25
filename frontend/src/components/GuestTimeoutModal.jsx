@@ -1,4 +1,3 @@
-// components/GuestTimeoutModal.jsx
 import React from "react";
 
 export default function GuestTimeoutModal({ onLogin, onSignup }) {
@@ -29,3 +28,4 @@ export default function GuestTimeoutModal({ onLogin, onSignup }) {
     </div>
   );
 }
+ 

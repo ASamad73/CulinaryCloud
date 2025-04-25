@@ -31,4 +31,4 @@ export const ALLOWED_CATEGORIES = [
     "Salad & Raita Innovations",
     "Fusion Desi Snacks"
   ];
-  
+   

@@ -27,7 +27,7 @@ function CommentModal({ recipeId, onClose }) {
         }
       });
       setText("");
-      fetchComments(); // Refresh comments after post
+      fetchComments(); // Refresh comments after pos
     } catch (err) {
       console.error("Error posting comment:", err);
     }
@@ -82,6 +82,3 @@ function CommentModal({ recipeId, onClose }) {
 }
 
 export default CommentModal;
-
-
-// added by Mr Az ---------------------

@@ -3,13 +3,11 @@ const Comment = require('../models/Comment');
 const Recipe = require('../models/Recipe');
 const authMiddleware = require('../middleware/auth');
 
-// 🔧 Add this import for gamification
 const { calculateUserScore, determineUserRank, updateUserRankAndScore } = require('../models/Gamification');
 
 
 const router = express.Router();
 
-// POST a comment on a recipe
 router.post('/:recipeId', authMiddleware, async (req, res) => {
   try {
     const { text } = req.body;
