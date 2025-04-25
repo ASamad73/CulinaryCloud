@@ -65,9 +65,41 @@ function Post({ recipe }) {
       {recipe.steps?.map((step, index) => (
         <div key={index} className="cooking-step">
           <i className="fa-solid fa-thumbtack"></i>
-          <p className="cooking-step">Step {index + 1}: {step.description}</p>
+          <p className="cooking-step"> <span className="cooking-step-heading"> Step {index + 1}: </span> {step.description}</p>
         </div>
       ))}
+
+      <h3 className="post-cooking-heading">Nutritional Information</h3>
+      {recipe.nutrition ? (
+        <table className="post-table">
+          <thead>
+            <tr className="post-row">
+              <th className="post-table-heading">Nutrient</th>
+              <th className="post-table-heading">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="post-row">
+              <td className="post-table-data">Calories</td>
+              <td className="post-table-data">{recipe.nutrition.calories}</td>
+            </tr>
+            <tr className="post-row">
+              <td className="post-table-data">Protein (g)</td>
+              <td className="post-table-data">{recipe.nutrition.protein}</td>
+            </tr>
+            <tr className="post-row">
+              <td className="post-table-data">Fat (g)</td>
+              <td className="post-table-data">{recipe.nutrition.fat}</td>
+            </tr>
+            <tr className="post-row">
+              <td className="post-table-data">Carbs (g)</td>
+              <td className="post-table-data">{recipe.nutrition.carbs}</td>
+            </tr>
+          </tbody>
+        </table>
+      ) : (
+        <p>No nutritional information available.</p>
+      )}
 
       {recipe.videoUrls?.length > 0 && (
         <div className="video-section">

@@ -1,5 +1,3 @@
-// added by Mr Az ---------------------
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -46,19 +44,37 @@ function CommentModal({ recipeId, onClose }) {
         <div className="comment-list">
           {comments.map((c) => (
             <div key={c._id} className="comment-item">
-              <strong>{c.user?.username || "User"}:</strong> {c.text}
+              <div className="comment-user-info" style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                {c.user?.profilePicture ? (
+                  <img
+                    src={c.user.profilePicture}
+                    alt="User"
+                    style={{ width: "24px", height: "24px", borderRadius: "50%" }}
+                  />
+                ) : (
+                  <i className="fa-solid fa-user" style={{ fontSize: "18px" }} />
+                )}
+                <strong>{c.user?.name || "User"}</strong>
+                <span style={{ color: "#888", fontSize: "12px" }}>
+                  ({c.user?.rank || "Prep Cook"})
+                </span>
+              </div>
+              <p style={{ marginLeft: "32px" }}>{c.text}</p>
             </div>
           ))}
         </div>
-        <form onSubmit={handleSubmit} className="comment-form">
+        <form onSubmit={handleSubmit} className="comment-form" style={{ marginTop: "16px", display: "flex", gap: "8px" }}>
           <input
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Write a comment..."
             className="comment-input"
+            style={{ flex: 1, padding: "8px" }}
           />
-          <button type="submit" className="comment-submit">Post</button>
+          <button type="submit" className="comment-submit" style={{ backgroundColor: "#008000", color: "#fff", border: "none", padding: "8px 12px", borderRadius: "4px" }}>
+            Post
+          </button>
         </form>
       </div>
     </div>

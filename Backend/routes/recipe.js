@@ -14,13 +14,21 @@ const axios      = require("axios");
 const router = express.Router();
 
 const storage = multer.memoryStorage();
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type"), false);
+  }
+};
 const upload = multer({
-    storage,
-    limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+  storage,
+  fileFilter:fileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-
 
 // Utility to clean Markdown fences from a string
 function stripMarkdownJSON(text) {
@@ -382,6 +390,43 @@ router.get('/liked', authMiddleware, async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
+//----------------------------AZ------------------------------------------------------------------------------------------
+
+// GET /recipes/trending - Top 5 Trending Recipes
+router.get('/trending', guestMiddleware, async (req, res) => {
+    try {
+        const recipes = await Recipe.find().populate("user", "name profilePicture rank");
+
+        const scoredRecipes = await Promise.all(
+            recipes.map(async (recipe) => {
+                const likeCount = await Like.countDocuments({ recipe: recipe._id });
+                const commentCount = await Comment.countDocuments({ recipe: recipe._id });
+
+                const ratings = recipe.ratings || [];
+                const ratingSum = ratings.reduce((acc, r) => acc + r.value, 0);
+                const averageRating = ratings.length > 0 ? ratingSum / ratings.length : 0;
+
+                const engagementScore = (likeCount * 3) + (commentCount * 2) + (averageRating * 4);
+
+                return {
+                    ...recipe._doc,
+                    engagementScore,
+                    averageRating  // ✅ Add this line!
+                };
+            })
+        );
+
+        scoredRecipes.sort((a, b) => b.engagementScore - a.engagementScore);
+
+        res.status(200).json(scoredRecipes.slice(0, 5));
+    } catch (error) {
+        console.error("Trending recipe error:", error);
+        res.status(500).json({ message: "Failed to fetch trending recipes" });
+    }
+});
+
+//----------------------------AZ------------------------------------------------------------------------------------------
 
 router.get('/:id', async (req, res) => {
     try {

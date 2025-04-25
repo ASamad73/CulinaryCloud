@@ -54,7 +54,7 @@ router.get('/:recipeId', async (req, res) => {
     const skip = (page - 1) * limit;
 
     const comments = await Comment.find({ recipe: recipeId })
-      .populate('user', 'username') // attach username to comment
+      .populate('user', 'name profilePicture rank') // attach username to comment
       .sort({ createdAt: -1 }) // newest first
       .skip(skip)
       .limit(limit);

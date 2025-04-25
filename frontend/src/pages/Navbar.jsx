@@ -12,13 +12,17 @@ function Navbar({ onLogout }) {
           <i className="fa-solid fa-house"></i>
           <h3>Home</h3>
         </div>
-        <div className="sites" onClick={() => navigate("/home/quick-recipes")}>
-          <i className="fa-solid fa-forward-fast"></i>
-          <h3>Quick</h3>
-        </div>
         <div className="sites" onClick={() => navigate("/home/create")}>
           <i className="fa-solid fa-square-plus"></i>
           <h3>Create</h3>
+        </div>
+        <div className="sites" onClick={() => navigate("/home/trending")}>
+          <i className="fa-solid fa-fire"></i>
+          <h3>Trending</h3>
+        </div>
+        <div className="sites" onClick={() => navigate("/home/quick-recipes")}>
+          <i className="fa-solid fa-forward-fast"></i>
+          <h3>Quick</h3>
         </div>
         <div className="sites" onClick={() => navigate("/home/profile")}>
           <i className="fa-solid fa-user"></i>
@@ -26,7 +30,7 @@ function Navbar({ onLogout }) {
         </div>
         {/* Optional: a logout button */}
         {onLogout && (
-          <div className="sites" onClick={onLogout}>
+          <div className="sites-logout" onClick={onLogout}>
             <i className="fa-solid fa-sign-out"></i>
             <h3>Logout</h3>
           </div>

@@ -35,8 +35,9 @@ function Profile() {
           profilePicture: response.data.profilePicture || profile_img,
           username: (
             `${response.data.fname || ""} ${response.data.lname || ""}`
-          ).trim() || "Username to be Displayed here",
-          bio: response.data.bio || "No bio yet."
+          ).trim() || "User name",
+          bio: response.data.bio || "No bio yet.",
+          rank: response.data.rank || "Prep Cook"
         }));
       } catch (error) {
         console.error("Error fetching user data:", error);

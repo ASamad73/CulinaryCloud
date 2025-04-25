@@ -27,7 +27,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #e5e7eb; /* Matches Tailwind's bg-gray-100 */
+  background-color: white; /* Matches Tailwind's bg-gray-100 */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -82,11 +82,12 @@
 }
 
 .middle-part-quick{
+  margin-left: 2vw;
   width: 50vw;
   height: auto;
 }
 
-.quick-recipes-title{
+.quick-recipes-title, .trending-recipes-title{
   text-align: center;
   margin-top: 0.9vh;
   font-size: 2rem;
@@ -99,6 +100,14 @@
   width: 50vw;
   height: auto;
 }
+
+.trending-recipes-title-container{
+  width: 50vw;
+  display: flex;
+  justify-content: center;
+}
+
+
 
 .search-section-heading{
   margin-top: 1vh;
@@ -178,15 +187,17 @@
 .fa-solid.fa-star{
   color: #FFA500;
 }
+.search-container {
+  position: fixed;
+  top: 0;
+  left: 19vw;
+  width: 55vw;
+  z-index: 200;
+}
 
 .search-field-div {
-  position: fixed;
-  top: 0rem;      
-  left: 19vw;        
-  width: 55vw;
   height: 13vh;
   background-color: #FAF3E0; 
-  z-index: 100;              
   display: flex;            
   align-items: flex-end;
   justify-content: center;
@@ -211,8 +222,19 @@
   font-weight: 500;
 }
 
-.suggestions-list{
-  margin-top: 10vh;
+.suggestions-list {
+  position: absolute;
+  top: 13vh; 
+  left: 1vw;
+  width: 100%;
+  max-height: 40vh;
+  overflow-y: auto;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 0 0 8px 8px;
+  background-color: #FAF3E0;
+  z-index: 300;
 }
 
 .post-number{
@@ -376,7 +398,7 @@
 }
 .time-field1, .time-field2{
   height: 7vh;
-  width: 6vw;
+  width: 10vw;
   border-radius: 6px;
   padding-left: 10px;
   outline: none;
@@ -524,7 +546,7 @@ input[type="file"]::-webkit-file-upload-button {
   margin-top: 1rem;
   font-size: 1.1rem;
 }
-.sites{
+.sites, .sites-logout{
   display: flex;
   align-items: center;
   gap: 10%;
@@ -533,7 +555,7 @@ input[type="file"]::-webkit-file-upload-button {
   position: relative;
   padding-left: 5%;
 }
-.sites::before {
+.sites::before, .sites-logout::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -545,9 +567,15 @@ input[type="file"]::-webkit-file-upload-button {
   z-index: -1; /* Keeps the effect behind the text/icons */
 }
 
-.sites:hover::before {
+.sites:hover::before, .sites-logout:hover::before {
   opacity: 1;
 }
+
+
+.sites-logout::before{
+  background-color: #E57373;
+}
+
 /* post */
 
 .post-info {
@@ -561,6 +589,10 @@ input[type="file"]::-webkit-file-upload-button {
   color: #2c2c2c;
   text-align: left;
   margin-bottom: 1vw;
+  color: #5D4037;
+  font-weight: 500;
+  /* text-decoration: underline; */
+
 }
 
 .post-table {
@@ -589,6 +621,11 @@ input[type="file"]::-webkit-file-upload-button {
   gap: 1vw;
   margin-top: 1vw;
   text-align: left;
+}
+
+.cooking-step-heading{
+  font-style: italic;
+  font-weight: 500;
 }
 
 .cooking-step i {
@@ -669,6 +706,15 @@ input[type="file"]::-webkit-file-upload-button {
   overflow: hidden; 
   text-overflow: ellipsis; 
   padding-top: 0.8rem;
+}
+
+.edit-profile:hover {
+  background-color: #ffd59a;
+}
+
+.edit-profile:active {
+  transform: scale(0.97);
+  background-color: #ffc682;
 }
 
 .user-image{
@@ -955,8 +1001,9 @@ input[type="file"]::-webkit-file-upload-button {
   justify-content: center;
   background-color: #FAF3E0;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); */
   border-radius: 6px;
+  width: 50vw;
 }
 
 .recipe-icon {
@@ -970,7 +1017,7 @@ input[type="file"]::-webkit-file-upload-button {
   font-size: 2rem;
   font-weight: bold;
   color: #2e7d32;
-  margin: 0;
+  /* margin: 0; */
 }
 
 /* Main Content */
@@ -1185,6 +1232,15 @@ input[type="file"]::-webkit-file-upload-button {
   transform: translateY(-2px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
+
+.timer-button.disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  border: none;
+  opacity: 0.7;
+}
+
 /* ------------------------------------- */
 
 /* Progress Section */
@@ -1415,13 +1471,13 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 .user-chat {
-  align-self: flex-start;
+  align-self: flex-end;
   background: #fcd34d;
   color: #166534;
 }
 
 .bot-chat {
-  align-self: flex-end;
+  align-self: flex-start;
   background: #166534;
   color: white;
 }
@@ -1472,6 +1528,7 @@ input[type="file"]::-webkit-file-upload-button {
   align-items: center;
   padding: 0.5rem;
   background: #166534;
+  /* background-color: #4CAF50; */
   color: white;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
@@ -1545,16 +1602,16 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 .bio-edit-btn {
-  margin-top: 10px;
-  padding: 6px 14px;
-  font-size: 10px;
-  background-color: #1d904f;
+  background-color: #6CBF84;
   color: white;
   border: none;
   border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  width: fit-content;
-  transition: background-color 0.2s;
+  margin-top: 8px;
+  transition: background-color 0.2s ease;
 }
 
 .bio-edit-btn:hover {
@@ -1562,7 +1619,7 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 .user-bio {
-  font-size: 14.5px;
+  /* font-size: 14.5px;
   font-weight: 400;
   color: #666;
   line-height: 1.5;
@@ -1570,5 +1627,8 @@ input[type="file"]::-webkit-file-upload-button {
   margin: 0 auto;
   word-wrap: break-word;
   white-space: pre-wrap;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif; */
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
 }

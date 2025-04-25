@@ -11,7 +11,6 @@ export default function ChatBot({onClose}) {
   const [welcome, setWelcome] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-
   const chatsRef = useRef(null);
   const endRef = useRef(null);
 
@@ -21,7 +20,7 @@ export default function ChatBot({onClose}) {
   //   "Explain why?"
   // ];
 
-  
+
   // Fetch conversation history on mount
   useEffect(() => {
     const fetchHistory = async () => {

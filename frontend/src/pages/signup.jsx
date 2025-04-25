@@ -203,12 +203,27 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
       setConfirmPasswordError("Confirm Password is required");
       hasErrors = true;
     }
-
+  
     if (hasErrors) {
       setLoading(false);
       return;
     }
 
+    if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long.");
+      setLoading(false);
+      return;
+    }
+    
+    // 2) must have upper + lower + special
+    const complexity = /^(?=.[a-z])(?=.[A-Z])(?=.*\W).+$/;
+    if (!complexity.test(password)) {
+      setPasswordError(
+        "Password must include uppercase, lowercase & a special character."
+      );
+      setLoading(false);
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -293,6 +308,9 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
           placeholder={passwordError || undefined}
           className={passwordError ? "placeholder-red-500 border-red-500" : "placeholder-gray-400"}
         />
+        {passwordError && (
+          <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+        )}
         <InputField
           label="Confirm Password"
           type="password"

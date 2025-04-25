@@ -10,7 +10,12 @@
 module.exports = {
   content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        'login_background':'#FAF3E0',
+        'login_caption': '#5D4037'
+      }
+    },
   },
   plugins: [],
 };

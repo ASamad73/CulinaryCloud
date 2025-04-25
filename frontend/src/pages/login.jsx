@@ -306,7 +306,7 @@ export default function LoginScreen({ onAuthSuccess, toggleScreen, onGuestLogin 
       <h2 className="text-center text-xl font-bold text-green-700 mb-1">
         Welcome to Culinary Cloud
       </h2>
-      <h4 className="text-center italic text-sm text-tagline font-semibold">
+      <h4 className="text-center italic text-sm text-tagline font-semibold text-login_caption">
         Inspiring Chefs, One Recipe at a Time!
       </h4>
 

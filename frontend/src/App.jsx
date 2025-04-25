@@ -185,7 +185,8 @@ import Profile from "./pages/Profile";
 import Create from "./pages/Create";
 import SearchResults from "./pages/SearchResults";
 import QuickRecipes from "./pages/QuickRecipes.jsx";
-import ChatBot from "./pages/Chatbot.jsx";
+import ChatBot from "./pages/ChatBot.jsx";
+import TrendingRecipes from "./pages/TrendingRecipes.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestTimeoutModal from "./components/GuestTimeoutModal";
 import StartCooking from "./pages/startCooking"; // Added import for StartCooking
@@ -353,6 +354,7 @@ function App() {
           <Route path="create" element={<Create />} />
           <Route path="quick-recipes" element={<QuickRecipes />} />
           <Route path="start-cooking" element={<StartCooking />} /> {/* Added route for step-by-step cooking */}
+          <Route path="trending" element={<TrendingRecipes/>} />
         </Route>
       </Routes>
     </div>
