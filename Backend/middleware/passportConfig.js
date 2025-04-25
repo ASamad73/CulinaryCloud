@@ -25,7 +25,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        //  Safely access the email
+        //  Safely access the emai
         const email = profile.emails?.[0]?.value;
 
         if (!email) {
