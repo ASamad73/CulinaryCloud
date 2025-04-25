@@ -171,4 +171,4 @@ export default function TrendingRecipes({ setPost, setProfile, onLogout }) {
             )}
           </div>
   );
-}
+}   

@@ -28,7 +28,6 @@ function Navbar({ onLogout }) {
           <i className="fa-solid fa-user"></i>
           <h3>Profile</h3>
         </div>
-        {/* Optional: a logout button */}
         {onLogout && (
           <div className="sites-logout" onClick={onLogout}>
             <i className="fa-solid fa-sign-out"></i>
@@ -41,3 +40,4 @@ function Navbar({ onLogout }) {
 }
 
 export default Navbar;
+ 
