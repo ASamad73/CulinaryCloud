@@ -69,7 +69,7 @@ const UserSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// at the bottom of User.js, right before module.exports
+// at the bottom of User.js, right before module.export
 UserSchema.pre('save', function(next) {
   if (!this.name && this.email) {
     this.name = this.email.split('@')[0];

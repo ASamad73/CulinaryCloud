@@ -97,7 +97,7 @@ router.put('/bio', authMiddleware, async (req, res) => {
   try {
     const { bio } = req.body;
 
-    // Optional: limit bio length
+    // Optional: limit bio lengt
     if (bio && bio.length > 300) {
       return res.status(400).json({ msg: 'Bio is too long (max 300 characters)' });
     }

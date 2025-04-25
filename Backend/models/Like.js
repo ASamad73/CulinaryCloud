@@ -19,8 +19,3 @@ const LikeSchema = new mongoose.Schema({
 
 module.exports = mongoose.model('Like', LikeSchema);
 
-
-
-
-
-// No need to add an id specifically ourselves as Mongoose does it for us 
