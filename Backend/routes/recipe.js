@@ -42,7 +42,13 @@ async function normalizeWithGemini(raws) {
   You are a cooking assistant. Normalize this list of user-entered ingredients into the form
 "quantity unit name".  Correct typos, translate non-English words to English, and use
 **standard short-form unit abbreviations** (e.g. g, kg, ml, l, tsp, tbsp, cup).  Then return
-the result as a JSON array.  Input:
+the result as a JSON array. 
+❗️Important:
+- DO NOT return markdown (no \`\`\` or code fences).
+- DO NOT return objects or nested JSON.
+- Only return a raw JSON array of strings, e.g.:
+  ["2 cups rice", "3 tbsp oil", "1 kg chicken"]
+ Input:
   ${JSON.stringify(raws, null, 2)}
   `;
   

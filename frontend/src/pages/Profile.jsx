@@ -14,7 +14,9 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [newBio, setNewBio] = useState("");
+  
   // Fetch user profile data
   useEffect(() => {
     const fetchUserData = async () => {
@@ -144,6 +146,38 @@ function Profile() {
     window.location.href = `/edit-recipe/${recipe._id}`;
   };
 
+  const handleBioUpdate = async () => {
+    if (!newBio.trim()) {
+      alert("Bio cannot be empty");
+      return;
+    }
+  
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/user/bio`,
+        { bio: newBio },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-auth-token": token
+          }
+        }
+      );
+  
+      setUserData(prev => ({
+        ...prev,
+        bio: response.data.bio || newBio
+      }));
+      setIsEditingBio(false);
+      setNewBio("");
+    } catch (error) {
+      console.error("Error updating bio:", error);
+      alert(error.response?.data?.msg || "Failed to update bio");
+    }
+  };
+  
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -163,7 +197,34 @@ function Profile() {
             className="user-image"
             onError={(e) => { e.target.src = profile_img; }}
           />
-          <p className="user-bio">{userData.bio}</p>
+          {isEditingBio ? (
+          <div className="bio-edit-container">
+            <input
+              type="text"
+              className="bio-input"
+              placeholder="Enter your bio"
+              value={newBio}
+              onChange={(e) => setNewBio(e.target.value)}
+            />
+            <button className="bio-confirm-btn" onClick={handleBioUpdate}>
+              Confirm
+            </button>
+          </div>
+        ) : (
+          <>
+            <p className="user-bio">{userData.bio}</p>
+            <button
+              className="bio-edit-btn"
+              onClick={() => {
+                setIsEditingBio(true);
+                setNewBio(userData.bio === "No bio yet." ? "" : userData.bio);
+              }}
+            >
+              Change Bio
+            </button>
+          </>
+        )}
+        
         </div>
         <div className="profile-right">
           <p>{userData.username}</p>

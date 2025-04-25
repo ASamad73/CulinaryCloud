@@ -1506,3 +1506,69 @@ input[type="file"]::-webkit-file-upload-button {
 .open-chat-btn:hover {
   background-color: #2e7d32;
 }
+
+
+
+
+.bio-edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.bio-input {
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 300px;
+  background-color: #f9f9f9;
+}
+
+.bio-confirm-btn {
+  padding: 6px 14px;
+  font-size: 14px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: fit-content;
+  transition: background-color 0.2s;
+}
+
+.bio-confirm-btn:hover {
+  background-color: #218838;
+}
+
+.bio-edit-btn {
+  margin-top: 10px;
+  padding: 6px 14px;
+  font-size: 10px;
+  background-color: #1d904f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: fit-content;
+  transition: background-color 0.2s;
+}
+
+.bio-edit-btn:hover {
+  background-color: #0b7b38;
+}
+
+.user-bio {
+  font-size: 14.5px;
+  font-weight: 400;
+  color: #666;
+  line-height: 1.5;
+  max-width: 260px;
+  margin: 0 auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}

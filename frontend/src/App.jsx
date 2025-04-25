@@ -267,6 +267,7 @@ function App() {
     setShowSignup(!showSignup);
   };
 
+  
   return (
     <div className="main-container">
       <Routes>
@@ -298,7 +299,7 @@ function App() {
         <Route
           path="/home/*"
           element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <ProtectedRoute isAuthenticated={isAuthenticated} isGuest={isGuest}>
               <div className="original-page">
                 <div className="screen">
                   <div className="page">
