@@ -6,7 +6,6 @@ const session = require('express-session');     // <-- New: Session middleware
 const passport = require('passport');           // <-- New: Passport middleware
 const { v2: cloudinary } = require('cloudinary'); // Add this line
 
-// Load environment variables from .env file
 dotenv.config();
 cloudinary.config({ 
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -20,9 +19,6 @@ app.use(cors({
   origin: 'http://localhost:5173' // allow your frontend origin
 }));
 
-// Middleware to parse JSON bodies
-// app.use(express.json());
-// Replace your current body parser config with:
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 // Set up session middleware
@@ -52,7 +48,6 @@ const connectDB = async () => {
 
 connectDB();
 
-// A simple route to test the server
 app.get('/', (req, res) => res.send('API running'));
 
 // Route imports
