@@ -1,5 +1,5 @@
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+// const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("./cloudinary");
 
 const storage = new CloudinaryStorage({
@@ -22,7 +22,7 @@ const videoFilter = (req, file, cb) => {
 };
 
 const uploadVideo = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   fileFilter: videoFilter,
   limits: { fileSize: 50 * 1024 * 1024 }, 
 });
