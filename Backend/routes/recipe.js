@@ -6,27 +6,28 @@ const Comment = require('../models/Comment');
 const uploadVideo = require('../utils/videoUpload');
 const authMiddleware = require('../middleware/auth');
 const guestMiddleware = require('../middleware/guest');
-const multer = require('multer');
+// const multer = require('multer');
 const cloudinary = require('../utils/cloudinary');
 const { calculateUserScore, determineUserRank, updateUserRankAndScore } = require('../models/Gamification'); // Import the gamification functions
 const axios      = require("axios");   
 const router = express.Router();
-const streamifier = require("streamifier"); 
+// const streamifier = require("streamifier"); 
 
-const storage = multer.memoryStorage();
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Invalid file type"), false);
-  }
-};
-const upload = multer({
-  storage,
-  fileFilter:fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 },
-});
+// const storage = multer.memoryStorage();
+// const fileFilter = (req, file, cb) => {
+//   const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+//   if (allowedTypes.includes(file.mimetype)) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("Invalid file type"), false);
+//   }
+// };
+// const upload = multer({
+//   storage,
+//   fileFilter:fileFilter,
+//   limits: { fileSize: 10 * 1024 * 1024 },
+// });
+const { uploadVideo, uploadVideoToCloudinary } = require('../utils/videoUpload');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -553,33 +554,21 @@ router.post('/:id/rate', authMiddleware, async (req, res) => {
 //       res.status(500).json({ message: "Video upload failed", error: err });
 //     }
 //   });
-router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async (req, res) => {
-    try {
-      if (!req.file) return res.status(400).send("No video file uploaded.");
-  
-      const uploadStream = () =>
-        new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            {
-              folder: "recipe_videos",
-              resource_type: "video",
-              public_id: req.file.originalname.split(".")[0], // optional, or leave undefined
-            },
-            (error, result) => {
-              if (result) resolve(result);
-              else reject(error);
-            }
-          );
-          streamifier.createReadStream(req.file.buffer).pipe(stream);
-        });
-  
-      const result = await uploadStream();
-      res.status(200).json({ videoUrl: result.secure_url, public_id: result.public_id });
-    } catch (err) {
-      console.error("Video upload failed:", err);
-      res.status(500).json({ message: "Video upload failed", error: err.message });
+router.post(
+  "/upload-video",
+  authMiddleware,
+  uploadVideo.single("video"),         // ← from utils: multer.memoryStorage + fileFilter
+  uploadVideoToCloudinary,             // ← streams the buffer into Cloudinary
+  (req, res) => {
+    // on success, `req.file.cloudinary` has your Cloudinary result
+    if (!req.file || !req.file.cloudinary) {
+      return res.status(400).json({ message: "No video uploaded" });
     }
-  });
+    const { secure_url: videoUrl, public_id } = req.file.cloudinary;
+    res.status(200).json({ videoUrl, public_id });
+  }
+);
+
   
 
 module.exports = router;
