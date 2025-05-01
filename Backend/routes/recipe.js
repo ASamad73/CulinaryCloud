@@ -3,7 +3,6 @@ const express = require('express');
 const Recipe = require('../models/Recipe');
 const Like = require('../models/Like');
 const Comment = require('../models/Comment');
-// const uploadVideo = require('../utils/videoUpload');
 const authMiddleware = require('../middleware/auth');
 const guestMiddleware = require('../middleware/guest');
 // const multer = require('multer');
@@ -29,7 +28,7 @@ const router = express.Router();
 // });
 const {
   uploadVideo: uploadVideoMiddleware,
-  uploadVideoToCloudinary
+  uploadVideoToCloudinary: streamToCloudinary
 } = require('../utils/videoUpload');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -561,7 +560,7 @@ router.post(
   "/upload-video",
   authMiddleware,
   uploadVideoMiddleware.single("video"),         // ← from utils: multer.memoryStorage + fileFilter
-  uploadVideoToCloudinary,             // ← streams the buffer into Cloudinary
+  streamToCloudinary,             // ← streams the buffer into Cloudinary
   (req, res) => {
     // on success, `req.file.cloudinary` has your Cloudinary result
     if (!req.file || !req.file.cloudinary) {
