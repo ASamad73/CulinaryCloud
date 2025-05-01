@@ -27,7 +27,10 @@ const router = express.Router();
 //   fileFilter:fileFilter,
 //   limits: { fileSize: 10 * 1024 * 1024 },
 // });
-const { uploadVideo, uploadVideoToCloudinary } = require('../utils/videoUpload');
+const {
+  uploadVideo: uploadVideoMiddleware,
+  uploadVideoToCloudinary
+} = require('../utils/videoUpload');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -557,7 +560,7 @@ router.post('/:id/rate', authMiddleware, async (req, res) => {
 router.post(
   "/upload-video",
   authMiddleware,
-  uploadVideo.single("video"),         // ← from utils: multer.memoryStorage + fileFilter
+  uploadVideoMiddleware.single("video"),         // ← from utils: multer.memoryStorage + fileFilter
   uploadVideoToCloudinary,             // ← streams the buffer into Cloudinary
   (req, res) => {
     // on success, `req.file.cloudinary` has your Cloudinary result
