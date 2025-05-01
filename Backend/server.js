@@ -16,7 +16,7 @@ cloudinary.config({
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173' // allow your frontend origin
+  origin: process.env.FRONTEND_URL // allow your frontend origin
 }));
 
 app.use(express.json({ limit: '25mb' }));
