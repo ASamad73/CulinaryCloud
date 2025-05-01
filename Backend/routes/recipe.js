@@ -5,27 +5,27 @@ const Like = require('../models/Like');
 const Comment = require('../models/Comment');
 const authMiddleware = require('../middleware/auth');
 const guestMiddleware = require('../middleware/guest');
-// const multer = require('multer');
+const multer = require('multer');
 const cloudinary = require('../utils/cloudinary');
 const { calculateUserScore, determineUserRank, updateUserRankAndScore } = require('../models/Gamification'); // Import the gamification functions
 const axios      = require("axios");   
 const router = express.Router();
 // const streamifier = require("streamifier"); 
 
-// const storage = multer.memoryStorage();
-// const fileFilter = (req, file, cb) => {
-//   const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-//   if (allowedTypes.includes(file.mimetype)) {
-//     cb(null, true);
-//   } else {
-//     cb(new Error("Invalid file type"), false);
-//   }
-// };
-// const upload = multer({
-//   storage,
-//   fileFilter:fileFilter,
-//   limits: { fileSize: 10 * 1024 * 1024 },
-// });
+const storage = multer.memoryStorage();
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type"), false);
+  }
+};
+const upload = multer({
+  storage,
+  fileFilter:fileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
 const {
   uploadVideo: uploadVideoMiddleware,
   uploadVideoToCloudinary: streamToCloudinary
