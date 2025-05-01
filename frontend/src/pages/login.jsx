@@ -112,7 +112,7 @@ export default function LoginScreen({ onAuthSuccess, toggleScreen, onGuestLogin 
         <button
           type="button"
           onClick={() =>
-            (window.location.href = "http://localhost:5001/api/auth/google")
+            (window.location.href =  `${import.meta.env.VITE_API_URL}/auth/google`)
           }
           className="w-full h-10 flex items-center justify-center bg-white border border-gray-300 text-gray-700 font-semibold rounded-md shadow-sm hover:bg-gray-100 transition duration-200"
         >
