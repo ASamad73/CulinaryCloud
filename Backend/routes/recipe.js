@@ -11,6 +11,7 @@ const cloudinary = require('../utils/cloudinary');
 const { calculateUserScore, determineUserRank, updateUserRankAndScore } = require('../models/Gamification'); // Import the gamification functions
 const axios      = require("axios");   
 const router = express.Router();
+const streamifier = require("streamifier"); 
 
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
@@ -543,13 +544,40 @@ router.post('/:id/rate', authMiddleware, async (req, res) => {
     }
 });
 
+// router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async (req, res) => {
+//     try {
+//       const videoUrl = req.file.path;
+//       res.status(200).json({ videoUrl });
+//     } catch (err) {
+//       console.error("Video upload failed:", err);
+//       res.status(500).json({ message: "Video upload failed", error: err });
+//     }
+//   });
 router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async (req, res) => {
     try {
-      const videoUrl = req.file.path;
-      res.status(200).json({ videoUrl });
+      if (!req.file) return res.status(400).send("No video file uploaded.");
+  
+      const uploadStream = () =>
+        new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              folder: "recipe_videos",
+              resource_type: "video",
+              public_id: req.file.originalname.split(".")[0], // optional, or leave undefined
+            },
+            (error, result) => {
+              if (result) resolve(result);
+              else reject(error);
+            }
+          );
+          streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+  
+      const result = await uploadStream();
+      res.status(200).json({ videoUrl: result.secure_url, public_id: result.public_id });
     } catch (err) {
       console.error("Video upload failed:", err);
-      res.status(500).json({ message: "Video upload failed", error: err });
+      res.status(500).json({ message: "Video upload failed", error: err.message });
     }
   });
   
