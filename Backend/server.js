@@ -18,8 +18,7 @@ const app = express();
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL,
-    'https://se-project-bice.vercel.app/',
-    'https://se-project-git-main-clean-ahmad-jawwads-projects.vercel.app'
+    'https://se-project-bice.vercel.app'
   ],
   // credentials: true
 }));
