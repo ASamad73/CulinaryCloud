@@ -4,14 +4,14 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const session = require('express-session');     // <-- New: Session middleware
 const passport = require('passport');           // <-- New: Passport middleware
-const { v2: cloudinary } = require('cloudinary'); // Add this line
+// const { v2: cloudinary } = require('cloudinary'); // Add this line
 
-dotenv.config();
-cloudinary.config({ 
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
+// dotenv.config();
+// cloudinary.config({ 
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET
+// });
 
 const app = express();
 
