@@ -3,11 +3,12 @@ const express = require('express');
 const Recipe = require('../models/Recipe');
 const Like = require('../models/Like');
 const Comment = require('../models/Comment');
-const uploadVideo = require('../utils/videoUpload');
+// const uploadVideo = require('../utils/videoUpload');
 const authMiddleware = require('../middleware/auth');
 const guestMiddleware = require('../middleware/guest');
 const multer = require('multer');
-const cloudinary = require('../utils/cloudinary');
+// const cloudinary = require('../utils/cloudinary');
+const { uploadBufferToS3 } = require('../utils/s3');
 const { calculateUserScore, determineUserRank, updateUserRankAndScore } = require('../models/Gamification'); // Import the gamification functions
 const axios      = require("axios");   
 const router = express.Router();
@@ -125,16 +126,11 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
         let imageUrl = req.body.existingImage || '';
 
         if (req.file) {
-            const b64 = req.file.buffer.toString('base64');
-            const dataURI = `data:${req.file.mimetype};base64,${b64}`;
-
-            const result = await cloudinary.uploader.upload(dataURI, {
-                folder: 'recipes',
-                width: 800,
-                height: 600,
-                crop: 'limit'
-            });
-            imageUrl = result.secure_url;
+        //    / uploadBufferToS3(buffer, mimetype, folderName)
+            imageUrl = await uploadBufferToS3(
+              req.file.buffer,
+              req.file.mimetype,
+              'recipes/');
         }
 
         const newRecipe = new Recipe({
@@ -539,15 +535,25 @@ router.post('/:id/rate', authMiddleware, async (req, res) => {
     }
 });
 
-router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async (req, res) => {
+// router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async (req, res) => {
+//     try {
+//       const videoUrl = req.file.path;
+//       res.status(200).json({ videoUrl });
+//     } catch (err) {
+//       console.error("Video upload failed:", err);
+//       res.status(500).json({ message: "Video upload failed", error: err });
+//     }
+//   });
+
++ router.post("/upload-video", authMiddleware, uploadVideo, async (req, res) => {
     try {
-      const videoUrl = req.file.path;
-      res.status(200).json({ videoUrl });
+        const videoUrl = await require('../utils/videoUpload').handleVideoUpload(req);
+        res.status(200).json({ videoUrl });
     } catch (err) {
-      console.error("Video upload failed:", err);
-      res.status(500).json({ message: "Video upload failed", error: err });
+        console.error("Video upload failed:", err);
+        res.status(500).json({ message: "Video upload failed", error: err });
     }
-  });
+});
   
 
 module.exports = router;

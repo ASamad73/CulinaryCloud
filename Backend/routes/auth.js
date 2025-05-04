@@ -6,7 +6,8 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const passport = require("passport");
 const User = require("../models/User"); // Adjust the path as needed
-const cloudinary = require("../utils/cloudinary");
+// const cloudinary = require("../utils/cloudinary");
+const { uploadBufferToS3 } = require('../utils/s3');
 
 require("../middleware/passportConfig");
 
@@ -27,17 +28,17 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 },
 }); // 10MB
 
-// Helper to upload image buffer to Cloudinary
-const uploadToCloudinary = async (file) => {
-  const b64 = Buffer.from(file.buffer).toString("base64");
-  const dataURI = `data:${file.mimetype};base64,${b64}`;
-  return await cloudinary.uploader.upload(dataURI, {
-    folder: "user-profiles",
-    width: 500,
-    height: 500,
-    crop: "fill",
-  });
-};
+// // Helper to upload image buffer to Cloudinary
+// const uploadToCloudinary = async (file) => {
+//   const b64 = Buffer.from(file.buffer).toString("base64");
+//   const dataURI = `data:${file.mimetype};base64,${b64}`;
+//   return await cloudinary.uploader.upload(dataURI, {
+//     folder: "user-profiles",
+//     width: 500,
+//     height: 500,
+//     crop: "fill",
+//   });
+// };
 
 /* Google Authentication Routes */
 
@@ -103,12 +104,21 @@ router.post("/register", upload.single("profilePicture"), async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // let profilePicture = "";
+    // if (req.file) {
+    //   const result = await uploadToCloudinary(req.file);
+    //   profilePicture = result.secure_url;
+    // }
     let profilePicture = "";
     if (req.file) {
       const result = await uploadToCloudinary(req.file);
       profilePicture = result.secure_url;
+    // uploadBufferToS3(buffer, mimetype, optionalFolder)
+      profilePicture = await uploadBufferToS3(
+      req.file.buffer,
+      req.file.mimetype,
+      'user-profiles/');
     }
-
     user = new User({
       email,
       name:firstName,

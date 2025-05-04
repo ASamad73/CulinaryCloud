@@ -2,8 +2,9 @@ const express = require('express');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
-const cloudinary = require('../utils/cloudinary');
+// const cloudinary = require('../utils/cloudinary');
 const router = express.Router();
+const { uploadBufferToS3 } = require('../utils/s3');
 
 const storage = multer.memoryStorage();
 const upload = multer({ 
@@ -45,22 +46,16 @@ router.get('/me', authMiddleware, async (req, res) => {
 
 router.put('/profile', authMiddleware, upload.single('profilePicture'), async (req, res) => {
   try {
-    let profilePictureUrl = req.body.existingImage; 
+    let profilePictureUrl = req.body.existingImage || ""; 
     
     if (req.file) {
       // Convert buffer to base64
-      const b64 = Buffer.from(req.file.buffer).toString('base64');
-      const dataURI = `data:${req.file.mimetype};base64,${b64}`;
-      
-      // Upload to Cloudinary
-      const result = await cloudinary.uploader.upload(dataURI, {
-        folder: 'user-profiles',
-        width: 500,
-        height: 500,
-        crop: 'fill'
-      });
-      
-      profilePictureUrl = result.secure_url;
+      // +      // Upload directly to S3 under "user-profiles/"
+        profilePictureUrl = await uploadBufferToS3(
+        req.file.buffer,
+        req.file.mimetype,
+        'user-profiles/'
+        );
     }
 
     const updatedUser = await User.findByIdAndUpdate(
