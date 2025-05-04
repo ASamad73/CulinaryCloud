@@ -26,9 +26,7 @@ const upload = multer({
   fileFilter:fileFilter,
   limits: { fileSize: 10 * 1024 * 1024 },
 });
-
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-
 function stripMarkdownJSON(text) {
     return text
       .trim()
@@ -37,8 +35,6 @@ function stripMarkdownJSON(text) {
       .replace(/^[`]+|[`]+$/g, "")
       .trim();
   }
-  
-
 // Replace normalizeWithLLM with this Gemini version:
 async function normalizeWithGemini(raws) {
     const prompt = `
