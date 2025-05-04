@@ -16,7 +16,12 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL // allow your frontend origin
+  origin: [
+    process.env.FRONTEND_URL,
+    'https://se-project-bice.vercel.app/',
+    'https://se-project-git-main-clean-ahmad-jawwads-projects.vercel.app'
+  ],
+  credentials: true
 }));
 
 app.use(express.json({ limit: '25mb' }));

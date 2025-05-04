@@ -60,6 +60,7 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
     
     // 2) must have upper + lower + special
     const complexity = /^(?=.[a-z])(?=.[A-Z])(?=.*\W).+$/;
+
     if (!complexity.test(password)) {
       setPasswordError(
         "Password must include uppercase, lowercase & a special character."
@@ -88,6 +89,7 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
       }
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        // ${import.meta.env.VITE_API_URL}/api/recipes/${recipeId}
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -202,5 +204,3 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
     </div>
   );
 }
-
-
