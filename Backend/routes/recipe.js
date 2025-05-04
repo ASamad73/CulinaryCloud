@@ -3,6 +3,7 @@ const express = require('express');
 const Recipe = require('../models/Recipe');
 const Like = require('../models/Like');
 const Comment = require('../models/Comment');
+const uploadVideo = require('../utils/videoUpload');
 const authMiddleware = require('../middleware/auth');
 const guestMiddleware = require('../middleware/guest');
 const multer = require('multer');
@@ -10,7 +11,6 @@ const cloudinary = require('../utils/cloudinary');
 const { calculateUserScore, determineUserRank, updateUserRankAndScore } = require('../models/Gamification'); // Import the gamification functions
 const axios      = require("axios");   
 const router = express.Router();
-// const streamifier = require("streamifier"); 
 
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
@@ -26,10 +26,6 @@ const upload = multer({
   fileFilter:fileFilter,
   limits: { fileSize: 10 * 1024 * 1024 },
 });
-const {
-  uploadVideo: uploadVideoMiddleware,
-  uploadVideoToCloudinary: streamToCloudinary
-} = require('../utils/videoUpload');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -547,30 +543,15 @@ router.post('/:id/rate', authMiddleware, async (req, res) => {
     }
 });
 
-// router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async (req, res) => {
-//     try {
-//       const videoUrl = req.file.path;
-//       res.status(200).json({ videoUrl });
-//     } catch (err) {
-//       console.error("Video upload failed:", err);
-//       res.status(500).json({ message: "Video upload failed", error: err });
-//     }
-//   });
-router.post(
-  "/upload-video",
-  authMiddleware,
-  uploadVideoMiddleware.single("video"),         // ← from utils: multer.memoryStorage + fileFilter
-  streamToCloudinary,             // ← streams the buffer into Cloudinary
-  (req, res) => {
-    // on success, `req.file.cloudinary` has your Cloudinary result
-    if (!req.file || !req.file.cloudinary) {
-      return res.status(400).json({ message: "No video uploaded" });
+router.post("/upload-video", authMiddleware, uploadVideo.single("video"), async (req, res) => {
+    try {
+      const videoUrl = req.file.path;
+      res.status(200).json({ videoUrl });
+    } catch (err) {
+      console.error("Video upload failed:", err);
+      res.status(500).json({ message: "Video upload failed", error: err });
     }
-    const { secure_url: videoUrl, public_id } = req.file.cloudinary;
-    res.status(200).json({ videoUrl, public_id });
-  }
-);
-
+  });
   
 
 module.exports = router;
