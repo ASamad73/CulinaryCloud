@@ -13,20 +13,49 @@ const { calculateUserScore, determineUserRank, updateUserRankAndScore } = requir
 const axios      = require("axios");   
 const router = express.Router();
 
+
+
+
+
+
 const storage = multer.memoryStorage();
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Invalid file type"), false);
-  }
-};
+const ALLOWED_TYPES = [
+  'video/mp4',
+  'video/webm',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+];
 const upload = multer({
   storage,
-  fileFilter:fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(req, file, cb) {
+    if (ALLOWED_TYPES.includes(file.mimetype)) return cb(null, true);
+    cb(new Error(`Unsupported file type: ${file.mimetype}`));
+  },
+  limits: { fileSize: 100 * 1024 * 1024 }, // bump to 100 MB (tune as needed)
 });
+
+// Wrap multer so we can catch its errors in JSON
+function singleUpload(fieldName) {
+  return (req, res, next) =>
+    upload.single(fieldName)(req, res, err => {
+      if (err) return res.status(400).json({ message: err.message });
+      next();
+    });
+}
+
+
+
+
+// const storage = multer.memoryStorage();
+// const fileFilter = (req, file, cb) => {
+//   const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+//   if (allowedTypes.includes(file.mimetype)) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("Invalid file type"), false);
+//   }
+// };
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 function stripMarkdownJSON(text) {
     return text
@@ -545,15 +574,30 @@ router.post('/:id/rate', authMiddleware, async (req, res) => {
 //     }
 //   });
 
-+ router.post("/upload-video", authMiddleware, uploadVideo, async (req, res) => {
-    try {
-        const videoUrl = await require('../utils/videoUpload').handleVideoUpload(req);
+router.post(
+    '/upload-video',
+    authMiddleware,
+    singleUpload('video'),
+    async (req, res) => {
+      try {
+        if (!req.file)
+          return res.status(400).json({ message: 'No file provided.' });
+  
+        // pick a folder/prefix for videos
+        const folder = 'videos/';
+        const { buffer, mimetype } = req.file;
+        const videoUrl = await uploadBufferToS3(buffer, mimetype, folder);
+  
         res.status(200).json({ videoUrl });
-    } catch (err) {
-        console.error("Video upload failed:", err);
-        res.status(500).json({ message: "Video upload failed", error: err });
+      } catch (err) {
+        console.error('Video upload failed:', err);
+        res
+          .status(500)
+          .json({ message: 'Video upload failed', error: err.message });
+      }
     }
-});
+  );
+  
   
 
 module.exports = router;

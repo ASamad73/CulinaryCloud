@@ -49,7 +49,7 @@ router.put('/profile', authMiddleware, upload.single('profilePicture'), async (r
     let profilePictureUrl = req.body.existingImage || ""; 
     
     if (req.file) {
-      // Convert buffer to base64
+      // Convert buffer to base64 
       // +      // Upload directly to S3 under "user-profiles/"
         profilePictureUrl = await uploadBufferToS3(
         req.file.buffer,
