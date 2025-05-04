@@ -60,7 +60,7 @@ router.get(
     const payload = { user: { id: req.user._id } };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
     // Redirect back to your React app with the JWT
-    res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${token}`);
+    res.redirect(`${process.env.FRONTEND_URL}/api/dashboard?token=${token}`);
   }
 );
 
@@ -74,7 +74,8 @@ router.post("/register", upload.single("profilePicture"), async (req, res) => {
       .json({ msg: "Password must be at least 8 characters long." });
   }
   
-  // 2) complexity
+  // // 2) complexity
+  // const complexity = /^(?=.[a-z])(?=.[A-Z])(?=.*\W).+$/;
   const complexity = /^(?=.[a-z])(?=.[A-Z])(?=.*\W).+$/;
   if (!complexity.test(password)) {
     return res.status(400).json({
