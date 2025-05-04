@@ -21,7 +21,7 @@ app.use(cors({
     'https://se-project-bice.vercel.app/',
     'https://se-project-git-main-clean-ahmad-jawwads-projects.vercel.app'
   ],
-  credentials: true
+  // credentials: true
 }));
 
 app.use(express.json({ limit: '25mb' }));
