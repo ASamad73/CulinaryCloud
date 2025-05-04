@@ -19,16 +19,16 @@ function Recipe() {
     const fetchData = async () => {
       const token = localStorage.getItem('token');
       try {
-        const recipeRes = await axios.get(`${import.meta.env.VITE_API_URL}/recipes`, {
+        const recipeRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/recipes`, {
           headers: { 'x-auth-token': token || '' },
         });
-        const likedRes = await axios.get(`${import.meta.env.VITE_API_URL}/recipes/liked`, {
+        const likedRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/recipes/liked`, {
           headers: { 'x-auth-token': token || '' },
         });
 
         let userRatedRes = { data: [] };
         try {
-          userRatedRes = await axios.get(`${import.meta.env.VITE_API_URL}/recipes/user-ratings`, {
+          userRatedRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/recipes/user-ratings`, {
             headers: { 'x-auth-token': token || '' },
           });
         } catch (error) {
@@ -89,7 +89,7 @@ function Recipe() {
     );
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/recipes/${id}/like`, {}, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/recipes/${id}/like`, {}, {
         headers: { 'x-auth-token': token || '' },
       });
     } catch (err) {
@@ -115,7 +115,7 @@ function Recipe() {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/recipes/${id}/rate`,
+        `${import.meta.env.VITE_API_URL}/api/recipes/${id}/rate`,
         { rating: newRating },
         { headers: { 'x-auth-token': token || '' } }
       );

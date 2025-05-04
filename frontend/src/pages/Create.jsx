@@ -173,7 +173,7 @@ function Create(props) {
 
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/recipes/upload-video`,
+        `${import.meta.env.VITE_API_URL}/api/recipes/upload-video`,
         formData,
         {
           headers: {
@@ -286,7 +286,7 @@ function Create(props) {
 
     try {
       console.log("Sending token:", token);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/recipes`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/recipes`, {
         method: "POST",
         headers: {
           "x-auth-token": token

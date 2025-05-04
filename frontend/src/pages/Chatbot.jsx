@@ -17,7 +17,7 @@ export default function ChatBot({onClose}) {
     const fetchHistory = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/chat/history`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/history`, {
           headers: {
             'x-auth-token': token || ''
           }
@@ -52,7 +52,7 @@ export default function ChatBot({onClose}) {
 
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/chat/ask`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/ask`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

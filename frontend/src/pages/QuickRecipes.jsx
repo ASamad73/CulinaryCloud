@@ -20,13 +20,13 @@ export default function QuickRecipes() {
       const token = localStorage.getItem("token") || "";
       try {
         const [recipeRes, likedRes, userRatedRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_API_URL}/recipes/quick`, {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/recipes/quick`, {
             headers: { 'x-auth-token': token }
           }),
-          axios.get(`${import.meta.env.VITE_API_URL}/recipes/liked`, {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/recipes/liked`, {
             headers: { 'x-auth-token': token }
           }),
-          axios.get(`${import.meta.env.VITE_API_URL}/recipes/user-ratings`, {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/recipes/user-ratings`, {
             headers: { 'x-auth-token': token }
           })
         ]);
@@ -71,7 +71,7 @@ export default function QuickRecipes() {
 
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/recipes/${id}/like`,
+        `${import.meta.env.VITE_API_URL}/api/recipes/${id}/like`,
         {},
         { headers: { 'x-auth-token': token } }
       );
@@ -99,7 +99,7 @@ export default function QuickRecipes() {
     try {
       const token = localStorage.getItem("token") || "";
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/recipes/${id}/rate`,
+        `${import.meta.env.VITE_API_URL}/api/recipes/${id}/rate`,
         { rating: newRating },
         { headers: { 'x-auth-token': token } }
       );

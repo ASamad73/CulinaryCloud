@@ -42,9 +42,9 @@ export default function SearchResults() {
   // Build the URL we'll fetch
   const buildFetchUrl = () => {
     if (recipeId) {
-      return `${import.meta.env.VITE_API_URL}/recipes/${recipeId}`;
+      return `${import.meta.env.VITE_API_URL}/api/recipes/${recipeId}`;
     }
-    let url = `${import.meta.env.VITE_API_URL}/recipes/search?`;
+    let url = `${import.meta.env.VITE_API_URL}/api/recipes/search?`;
     if (ingredient) url += `ingredient=${encodeURIComponent(ingredient)}&`;
     if (cuisine)    url += `cuisine=${encodeURIComponent(cuisine)}`;
     return url;
@@ -65,7 +65,7 @@ export default function SearchResults() {
 
         // 2) liked IDs
         const likedRes = await axios.get(
-          `${import.meta.env.VITE_API_URL}/recipes/liked`,
+          `${import.meta.env.VITE_API_URL}/api/recipes/liked`,
           { headers: { 'x-auth-token': token } }
         );
         const likedMap = {};
@@ -74,7 +74,7 @@ export default function SearchResults() {
 
         // 3) user’s own ratings
         const ratingsRes = await axios.get(
-          `${import.meta.env.VITE_API_URL}/recipes/user-ratings`,
+          `${import.meta.env.VITE_API_URL}/api/recipes/user-ratings`,
           { headers: { 'x-auth-token': token } }
         );
         const userMap = {};
@@ -122,7 +122,7 @@ export default function SearchResults() {
 
     try {
       await axios.post(
-       `${import.meta.env.VITE_API_URL}/recipes/${id}/like`,
+       `${import.meta.env.VITE_API_URL}/api/recipes/${id}/like`,
         {},
         { headers: { 'x-auth-token': token } }
       );
@@ -152,7 +152,7 @@ export default function SearchResults() {
 
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/recipes/${id}/rate`,
+        `${import.meta.env.VITE_API_URL}/api/recipes/${id}/rate`,
         { rating: newRating },
         { headers: { 'x-auth-token': token } }
       );

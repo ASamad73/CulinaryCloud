@@ -87,7 +87,7 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
         formData.append("bio", bio);
       }
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/register`,
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

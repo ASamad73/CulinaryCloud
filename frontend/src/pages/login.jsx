@@ -40,7 +40,7 @@ export default function LoginScreen({ onAuthSuccess, toggleScreen, onGuestLogin 
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/login`,
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
         { email, password }
       );
 
@@ -112,7 +112,7 @@ export default function LoginScreen({ onAuthSuccess, toggleScreen, onGuestLogin 
         <button
           type="button"
           onClick={() =>
-            (window.location.href =  `${import.meta.env.VITE_API_URL}/auth/google`)
+            (window.location.href =  `${import.meta.env.VITE_API_URL}/api/auth/google`)
           }
           className="w-full h-10 flex items-center justify-center bg-white border border-gray-300 text-gray-700 font-semibold rounded-md shadow-sm hover:bg-gray-100 transition duration-200"
         >

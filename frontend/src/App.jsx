@@ -82,7 +82,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/chat/history`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/chat/history`, {
         method: 'DELETE',
         headers: { 'x-auth-token': localStorage.getItem('token') || '' }
       });

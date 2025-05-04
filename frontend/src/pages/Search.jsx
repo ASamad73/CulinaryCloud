@@ -14,7 +14,7 @@ function Search() {
     }
 
     const timer = setTimeout(() => {
-      fetch(`${import.meta.env.VITE_API_URL}/recipes/search?ingredient=${encodeURIComponent(searchTerm)}`)
+      fetch(`${import.meta.env.VITE_API_URL}/api/recipes/search?ingredient=${encodeURIComponent(searchTerm)}`)
         .then((res) => res.json())
         .then((data) => setSuggestions(data))
         .catch((err) => {

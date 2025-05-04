@@ -23,10 +23,10 @@ export default function TrendingRecipes({ setPost, setProfile, onLogout }) {
         const token = localStorage.getItem("token");
 
         const [recipeRes, likedRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_API_URL}/recipes/trending`, {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/recipes/trending`, {
             headers: { 'x-auth-token': token || '' }
           }),
-          axios.get(`${import.meta.env.VITE_API_URL}/recipes/liked`, {
+          axios.get(`${import.meta.env.VITE_API_URL}/api/recipes/liked`, {
             headers: { 'x-auth-token': token || '' }
           }),
         ]);
@@ -59,7 +59,7 @@ export default function TrendingRecipes({ setPost, setProfile, onLogout }) {
     );
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/recipes/${id}/like`, {}, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/recipes/${id}/like`, {}, {
         headers: { 'x-auth-token': token || '' }
       });
     } catch (err) {

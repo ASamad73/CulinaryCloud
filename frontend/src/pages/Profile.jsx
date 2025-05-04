@@ -22,7 +22,7 @@ function Profile() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/user/me`,
+          `${import.meta.env.VITE_API_URL}/api/user/me`,
           {
             headers: { "x-auth-token": token }
           }
@@ -54,7 +54,7 @@ function Profile() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/recipes/myrecipes`,
+          `${import.meta.env.VITE_API_URL}/api/recipes/myrecipes`,
           { headers: { "x-auth-token": token } }
         );
         setUserRecipes(response.data);
@@ -90,7 +90,7 @@ function Profile() {
       formData.append('profilePicture', file);
 
       const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/user/profile`,
+        `${import.meta.env.VITE_API_URL}/api/user/profile`,
         formData,
         {
           headers: {
@@ -129,7 +129,7 @@ function Profile() {
   const handleDelete = async (recipeId) => {
     const token = localStorage.getItem("token");
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/recipes/${recipeId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/recipes/${recipeId}`, {
         headers: { "x-auth-token": token }
       });
       // Remove the deleted recipe from state
@@ -155,7 +155,7 @@ function Profile() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/user/bio`,
+        `${import.meta.env.VITE_API_URL}/api/user/bio`,
         { bio: newBio },
         {
           headers: {
