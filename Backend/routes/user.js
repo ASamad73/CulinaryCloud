@@ -46,6 +46,10 @@ router.get('/me', authMiddleware, async (req, res) => {
 
 router.put('/profile', authMiddleware, upload.single('profilePicture'), async (req, res) => {
   try {
+    console.log('[PUT /profile] req.user.id =', req.user.id);
+    console.log('[PUT /profile] req.body =', req.body);
+    console.log('[PUT /profile] req.file =', req.file);
+
     let profilePictureUrl = req.body.existingImage || ""; 
     
     if (req.file) {
@@ -56,6 +60,7 @@ router.put('/profile', authMiddleware, upload.single('profilePicture'), async (r
         req.file.mimetype,
         'user-profiles/'
         );
+        console.log('[S3] Uploaded to', profilePictureUrl);
     }
 
     const updatedUser = await User.findByIdAndUpdate(

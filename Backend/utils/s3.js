@@ -24,7 +24,7 @@ async function uploadBufferToS3(buffer, mimetype, folder = '') {
       Key: key,
       Body: buffer,
       ContentType: mimetype,
-      ACL: 'public-read',        // or omit + use signed URLs
+      // ACL: 'public-read',        // or omit + use signed URLs
     })
   );
 

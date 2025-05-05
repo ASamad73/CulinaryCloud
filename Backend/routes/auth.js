@@ -112,8 +112,8 @@ router.post("/register", upload.single("profilePicture"), async (req, res) => {
     // }
     let profilePicture = "";
     if (req.file) {
-      const result = await uploadToCloudinary(req.file);
-      profilePicture = result.secure_url;
+      // const result = await uploadToCloudinary(req.file);
+      // profilePicture = result.secure_url;
     // uploadBufferToS3(buffer, mimetype, optionalFolder)
       profilePicture = await uploadBufferToS3(
       req.file.buffer,
