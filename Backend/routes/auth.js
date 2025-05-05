@@ -76,7 +76,7 @@ router.post("/register", upload.single("profilePicture"), async (req, res) => {
   
   // // 2) complexity
   // const complexity = /^(?=.[a-z])(?=.[A-Z])(?=.*\W).+$/;
-  const complexity = /^(?=.[a-z])(?=.[A-Z])(?=.*\W).+$/;
+  const complexity = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).+$/;
   if (!complexity.test(password)) {
     return res.status(400).json({
       msg: "Password must include uppercase, lowercase & a special character."

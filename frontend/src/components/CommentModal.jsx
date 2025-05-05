@@ -7,7 +7,7 @@ function CommentModal({ recipeId, onClose }) {
 
   const fetchComments = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/comments/${recipeId}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/comments/${recipeId}`);
       setComments(res.data);
     } catch (err) {
       console.error("Error fetching comments:", err);
@@ -19,7 +19,7 @@ function CommentModal({ recipeId, onClose }) {
     if (!text.trim()) return;
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/comments/${recipeId}`, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/comments/${recipeId}`, {
         text
       }, {
         headers: {

@@ -59,7 +59,7 @@ export default function SignupScreen({ onAuthSuccess, toggleScreen }) {
     }
     
     // 2) must have upper + lower + special
-    const complexity = /^(?=.[a-z])(?=.[A-Z])(?=.*\W).+$/;
+    const complexity = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).+$/;
 
     if (!complexity.test(password)) {
       setPasswordError(
