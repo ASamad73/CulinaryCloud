@@ -1,8 +1,12 @@
 <h1 align="center">🍲 CulinaryCloud</h1>
 <p align="center">
   <strong>A MERN‑stack Recipe Sharing & AI‑Driven Recommendation Platform</strong><br>
-  <a href="https://se-project-bice.vercel.app/">Live Demo</a> • 
 </p>
+
+---
+
+<h2>🌐 Live Demo</h2>
+<p>🔗<a href="https://se-project-bice.vercel.app/">https://se-project-bice.vercel.app/</a></p>
 
 ---
 
@@ -31,7 +35,7 @@ CulinaryCloud is a full‑stack web application built with the MERN stack (Mongo
    - Image/video uploads (AWS S3 / Cloudinary)  
    - Ingredient lists, step‑by‑step instructions  
 
-3. **⏳ Real-time Walkthrough**  
+3. **Real-time Walkthrough**  
    - Interactive, step-by-step cooking mode  
    - Users can progress through each recipe step without losing track  
 
@@ -52,14 +56,33 @@ CulinaryCloud is a full‑stack web application built with the MERN stack (Mongo
 ---
 
 ## 🏗️ Tech Stack
+<h3>Core Technologies</h3>
+<p align="center">  
+  <img src="https://skillicons.dev/icons?i=html" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=css" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=js" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=react" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=nodejs" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=express" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=mongodb" height="50" style="margin:10px;" />&nbsp;
+</p>
 
-- **Frontend**: React.js, React Router, Context API  
-- **Backend**: Node.js, Express.js, RESTful APIs  
-- **Database**: MongoDB (Atlas)  
+<h3>Tools & Libraries</h3>
+<p align="center">  
+  <img src="https://skillicons.dev/icons?i=git" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=github" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=vercel" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=netlify" height="50" style="margin:10px;" />&nbsp;
+  <img src="https://skillicons.dev/icons?i=vscode" height="50" style="margin:10px;" />&nbsp;
+</p>
+<hr/>
+
+<h3>Other</h3>
+- **Frontend**: React Router, Context API  
+- **Backend**: RESTful APIs  
 - **Authentication**: JWT, bcrypt  
 - **Storage**: AWS S3 / Cloudinary  
 - **AI & Nutrition**: Gemini API, Nutrition API  
-- **Styling**: Tailwind CSS, Vanilla CSS
   
 ---
 
