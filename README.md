@@ -77,11 +77,8 @@ CulinaryCloud is a full‑stack web application built with the MERN stack (Mongo
 </p>
 <hr/>
 
-<h3>Other</h3>
-- <p><b>Frontend:</b> React Router, Context API</p>  
-- <p><b>Backend:</b> RESTful APIs</p>  
-- <p><b>Authentication:</b> JWT, bcrypt</p>  
-- <p></b>Storage:</b> AWS S3 / Cloudinary</p>  
-- <p><b>AI & Nutrition:</b> Gemini API, Nutrition API</p>  
-  
----
+<!-- <p><b>Frontend:</b> React Router, Context API</p>   -->
+<!-- <p><b>Backend:</b> RESTful APIs</p>   -->
+<!-- <p><b>Authentication:</b> JWT, bcrypt</p>   -->
+<!-- <p></b>Storage:</b> AWS S3 / Cloudinary</p>   -->
+<!-- <p><b>AI & Nutrition:</b> Gemini API, Nutrition API</p>   -->
