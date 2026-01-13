@@ -43,7 +43,7 @@ CulinaryCloud is a full‑stack web application built with the MERN stack (Mongo
    - By cuisine, ingredients, prep time, dietary tags  
 
 5. *AI Recommendations*  
-   - Personalized recipe feed powered by OpenAI  
+   - Personalized recipe feed powered by Gemini  
    - Ingredient substitutions  
 
 6. *Nutrition Insights*  
